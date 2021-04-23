@@ -1,3 +1,5 @@
+`include "Defines.v"
+
 module MEM_Stage(
 	input clk,
 	input rst,

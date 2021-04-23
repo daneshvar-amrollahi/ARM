@@ -2,18 +2,19 @@
 
 module IF_Stage(
     input clk, rst, freeze, Branch_taken,
-    input [`ADDR_LEN - 1:0] BranchAddr,
-    output [`ADDR_LEN - 1:0] PC, Instruction
+    input [`ADDRESS_LEN - 1:0] BranchAddr,
+    output [`INSTRUCTION_LEN - 1:0] Instruction,
+    output [`ADDRESS_LEN - 1 : 0] PC
 );
 
-    wire[`ADDR_LEN - 1 : 0] pc_in, pc_reg_out, pc_inc_out;
+    wire[`ADDRESS_LEN - 1 : 0] pc_in, pc_reg_out, pc_inc_out;
 
-    register #(.WORD_LEN(`ADDR_LEN)) pc_reg(.clk(clk), .rst(rst),
+    register #(.WORD_LEN(`ADDRESS_LEN)) pc_reg(.clk(clk), .rst(rst),
                .ld(~freeze), .in(pc_in), .out(pc_reg_out));
 
-    incrementer #(.WORD_LEN(`ADDR_LEN)) pc_inc(.in(pc_reg_out), .out(pc_inc_out));
+    incrementer #(.WORD_LEN(`ADDRESS_LEN)) pc_inc(.in(pc_reg_out), .out(pc_inc_out));
 
-    mux2to1 #(.WORD_LEN(`ADDR_LEN)) pc_mux(.a(pc_inc_out), .b(BranchAddr), 
+    mux2to1 #(.WORD_LEN(`ADDRESS_LEN)) pc_mux(.a(pc_inc_out), .b(BranchAddr), 
                 .sel_a(~Branch_taken), .sel_b(Branch_taken), .out(pc_in));
 
     reg[`INSTRUCTION_LEN - 1:0] instruction_write_data;

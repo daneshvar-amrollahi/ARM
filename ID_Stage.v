@@ -1,3 +1,5 @@
+`include "Defines.v"
+
 module ID_Stage(
 	input clk,
 	input rst,
