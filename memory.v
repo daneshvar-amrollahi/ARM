@@ -1,8 +1,8 @@
 `include "defines.v"
 
-module memory(clk, reset, addr, write_data, mem_read, mem_write, read_data);
+module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
     input [`INSTRUCTION_LEN - 1 : 0] addr, write_data;
-    input clk, reset, mem_read, mem_write;
+    input clk, rst, mem_read, mem_write;
     output reg[`INSTRUCTION_LEN - 1 : 0] read_data; 
 
     reg[`INSTRUCTION_LEN - 1 : 0] data[0:`INSTRUCTION_MEM_SIZE - 1];
@@ -12,8 +12,8 @@ module memory(clk, reset, addr, write_data, mem_read, mem_write, read_data);
 
     integer i = 0;
 
-    always @(posedge clk, posedge reset) begin
-        if (reset) 
+    always @(posedge clk, posedge rst) begin
+        if (rst) 
         begin
             for (i = 0 ; i < `INSTRUCTION_MEM_SIZE ; counter = counter + 1)
                 data[i] <= `INSTRUCTION_LEN'b0;
