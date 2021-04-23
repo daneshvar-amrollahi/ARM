@@ -1,14 +1,14 @@
 `include "defines.v"
 
 module IF_Stage(
-    input clk, reset, freeze, Branch_taken,
+    input clk, rst, freeze, Branch_taken,
     input [`ADDR_LEN - 1:0] BranchAddr,
     output [`ADDR_LEN - 1:0] PC, Instruction
 );
 
     wire[`ADDR_LEN - 1 : 0] pc_in, pc_reg_out, pc_inc_out;
 
-    register #(.WORD_LEN(`ADDR_LEN)) pc_reg(.clk(clk), .rst(reset),
+    register #(.WORD_LEN(`ADDR_LEN)) pc_reg(.clk(clk), .rst(rst),
                .ld(~freeze), .in(pc_in), .out(pc_reg_out));
 
     incrementer #(.WORD_LEN(`ADDR_LEN)) pc_inc(.in(pc_reg_out), .out(pc_inc_out));
@@ -22,7 +22,7 @@ module IF_Stage(
 	reg mem_write = 1'b0;
 	reg[`INSTRUCTION_LEN - 1:0] instruction;
 
-    memory inst_mem(.clk(clk), .reset(reset), .addr(pc_reg_out), 
+    memory inst_mem(.clk(clk), .rst(rst), .addr(pc_reg_out), 
                     .write_data(instruction_write_data), .mem_read(mem_read), 
                     .mem_write(mem_write), .read_data(read_data));
     
