@@ -1,4 +1,4 @@
-`include "Defines.v"
+`include "defines.v"
 
 module EXE_Stage(
 	input clk,

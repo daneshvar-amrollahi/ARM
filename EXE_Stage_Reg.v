@@ -1,3 +1,5 @@
+`include "defines.v"	
+
 module EXE_Stage_Reg(
 	input clk,
 	input rst,

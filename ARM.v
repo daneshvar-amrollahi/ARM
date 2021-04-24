@@ -1,4 +1,4 @@
-`include "Defines.v"
+`include "defines.v"
 
 module ARM(input clk, rst);
 

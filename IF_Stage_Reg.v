@@ -1,4 +1,4 @@
-`include "Defines.v"
+`include "defines.v"
 
 module IF_Stage_Reg (
 	input clk, rst, freeze, flush,
