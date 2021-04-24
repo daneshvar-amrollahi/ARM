@@ -21,3 +21,10 @@
 `define TST 4'b1000
 `define LDR 4'b0100
 `define STR 4'b0100 
+
+`define MODE_LEN 2
+`define ARITHMETHIC_TYPE 2'b00
+`define MEMORY_TYPE 2'b01
+`define BRANCH_TYPE 2'b10
+
+`define OPCODE_LEN 4
