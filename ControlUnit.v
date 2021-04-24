@@ -3,9 +3,8 @@
 
 module ControlUnit(
 		mode, opcode, s,
-		execute_command, mem_read, mem_write,
-		wb_enable, immediate,
-		branch_taken, status_write_enable
+		exe_cmd, mem_read, mem_write,
+		wb_enable, branch_taken, status_write_enable
 		);
 
 	input[`MODE_LEN - 1 : 0] mode; 
@@ -96,29 +95,29 @@ module ControlUnit(
 					// `LDR : begin end
 
 					// `STR : begin end
-				end
-			end
+				endcase
 
 			`MEMORY_TYPE : begin
 				case (s) begin
 					`S_LDR: begin
 						wb_enable_reg = 1'b1;
-						status_wrt_en_reg = 1'b0;
+						status_wrt_en_reg = 1'b1;
 						exe_cmd_reg = `LDR_EXE;
+						mem_read = 1'b1;
 					end
 
 					`S_STR: begin
 						wb_enable_reg = 1'b0;
 						status_wrt_en_reg = 1'b0;
 						exe_cmd_reg = `STR_EXE;
+						mem_write = 1'b1;
 					end
-				end
-			end
+				endcase
 
 			`BRANCH_TYPE : begin
 				branch_taken_reg = 1'b1;
 			end
-		end
+		endcase
 
 	// assign immediate = immediate_reg;
 	assign exe_cmd = exe_cmd_reg;
