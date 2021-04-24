@@ -1,4 +1,5 @@
 `include "defines.v"
+`include "inst_defs.v"
 
 module ControlUnit(
 		mode, opcode, s,
@@ -99,14 +100,14 @@ module ControlUnit(
 			end
 
 			`MEMORY_TYPE : begin
-				case (opcode) begin
-					`LDR: begin
+				case (s) begin
+					`S_LDR: begin
 						wb_enable_reg = 1'b1;
 						status_wrt_en_reg = 1'b0;
 						exe_cmd_reg = `LDR_EXE;
 					end
 
-					`STR: begin
+					`S_STR: begin
 						wb_enable_reg = 1'b0;
 						status_wrt_en_reg = 1'b0;
 						exe_cmd_reg = `STR_EXE;

@@ -1,4 +1,5 @@
 `include "defines.v"
+`include "inst_defs.v"
 
 module Condition_Check (
     input [`CONDITION_LEN - 1:0] cond,
