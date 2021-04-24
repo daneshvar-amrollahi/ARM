@@ -7,12 +7,10 @@ module RegisterFile (
     input writeBackEn,
 	output [`REGISTER_LEN - 1:0] reg1, reg2
 );
-    integer i = 0;
+    
     reg[`REGISTER_LEN - 1:0] data[0:`REGISTER_MEM_SIZE - 1];
 
-    assign reg1 = data[src1];
-    assign reg2 = data[src2];
-
+    integer i = 0;
     always @(negedge clk, posedge rst) begin
 		if (rst) begin
             for (i = 0 ; i < `REGISTER_MEM_SIZE ; i = i + 1)
@@ -20,5 +18,7 @@ module RegisterFile (
         end
         else if (writeBackEn) data[Dest_wb] <= Result_wb;
 	end
-    
+
+    assign reg1 = data[src1];
+    assign reg2 = data[src2];
 endmodule 
