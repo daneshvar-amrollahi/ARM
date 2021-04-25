@@ -18,6 +18,8 @@
 `define CONDITION_LEN           4
 `define STATUS_REG_LEN          4
 
+`define SHIFT_OPERAND_INDEX     11
+`define SHIFT_OPERAND_LEN       12
 `define MOV_EXE  4'b0001
 `define MOVN_EXE 4'b1001
 `define ADD_EXE  4'b0010
