@@ -2,7 +2,7 @@
 
 module RegisterFile (
 	input clk, rst, 
-    input [`REG_ADDRESS_LEN - 1 : 0] src1, src2, Dest_wb,
+    input [`REGFILE_ADDRESS_LEN - 1 : 0] src1, src2, Dest_wb,
 	input[`REGISTER_LEN - 1:0] Result_wb,
     input writeBackEn,
 	output [`REGISTER_LEN - 1:0] reg1, reg2

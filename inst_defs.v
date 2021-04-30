@@ -1,3 +1,6 @@
+`ifndef inst_defs_v
+`define inst_defs_v
+
 `define MOV 4'b1101
 `define MVN 4'b1111
 `define ADD 4'b0100
@@ -27,3 +30,5 @@
 `define GT    4`b1100
 `define LE    4`b1101
 `define AL    4`b1110
+
+`endif

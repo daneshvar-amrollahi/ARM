@@ -44,12 +44,14 @@ module ARM(input clk, rst);
 	wire [`SHIFT_OPERAND_LEN - 1:0] shift_operand_ID, shift_operand_ID_Reg;
 	wire [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_ID, dest_reg_ID_Reg;
 	wire [3:0] status_register_EXE;
+	wire hazard;
 
-	ID_Stage ID_Stage(.clk(clk), .rst(rst), .PC_in(PC_IF_Reg),
-			.instruction_in(Instruction_IF_Reg), .PC(PC_ID)
-			.mem_read_out(mem_read_ID), .mem_write_out(mem_write_ID), wb_enable_out(wb_enable_ID),
+	assign hazard = 1'b0;
+	ID_Stage ID_Stage(.clk(clk), .rst(rst), .PC_in(PC_IF_Reg), .hazard(hazard),
+			.instruction_in(Instruction_IF_Reg), .PC(PC_ID),
+			.mem_read_out(mem_read_ID), .mem_write_out(mem_write_ID), .wb_enable_out(wb_enable_ID),
 			.execute_command_out(execute_command_ID),
-			branch_taken_out(branch_taken_ID), .status_write_enable_out(status_write_enable_ID),
+			.branch_taken_out(branch_taken_ID), .status_write_enable_out(status_write_enable_ID),
 			.reg_file_out1(reg_file_1_ID), .reg_file_out2(reg_file_2_ID), .immediate_out(immediate_ID),
 			.signed_immediate_out(signed_immediate_ID), 
 			.shift_operand_out(shift_operand_ID),
@@ -58,7 +60,6 @@ module ARM(input clk, rst);
 
 
 	
-	ID_Stage_Reg ID_Stage_Reg(.clk(clk), .rst(rst), .PC_in(PC_ID), .PC(PC_ID_Reg));
 
 	ID_Stage_Reg ID_Stage_Reg(.clk(clk), .rst(rst), .flush(flush), .pc_in(PC_ID), .mem_read_in(mem_read_ID), .mem_write_in(mem_write_ID), .wb_enable_in(wb_enable_ID),
 		.branch_taken_in(branch_taken_ID), .status_write_enable_in(status_write_enable_ID), 

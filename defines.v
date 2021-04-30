@@ -1,3 +1,6 @@
+`ifndef defines_v
+`define defines_v
+
 `define ADDRESS_LEN             32
 `define INSTRUCTION_LEN         32
 `define INSTRUCTION_MEM_SIZE    256
@@ -36,3 +39,5 @@
 
 `define S_LDR 1'b1
 `define S_STR 1'b0
+
+`endif

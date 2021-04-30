@@ -4,7 +4,8 @@ module ID_Stage(
 	input clk,
 	input rst,
 	input[`ADDRESS_LEN - 1: 0] PC_in,
-	input[`INSTRUCTION_LEN - 1:0] instrution_in,
+	input[`INSTRUCTION_LEN - 1:0] instruction_in,
+	input hazard,
 	
 	output[`ADDRESS_LEN - 1: 0] PC,
 
@@ -22,7 +23,7 @@ module ID_Stage(
 	
 	output immediate_out,
 	output [23:0] signed_immediate,
-	output [`SHIFT_OPERAND_LEN - 1:0] shift_operand
+	output [`SHIFT_OPERAND_LEN - 1:0] shift_operand,
 	output [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_out /* = Rd */
 
 );
@@ -41,6 +42,7 @@ module ID_Stage(
 			.status_write_enable(status_write_enable));
 
 	//cond_state should be ORed with a hazard signal ---> select of mux
+	wire cond_state;
 	assign control_unit_mux_enable = ~cond_state | hazard;
 
 	// Needs to be checked in the future
@@ -82,7 +84,7 @@ module ID_Stage(
 	wire [3:0] status_register;
 	assign status_register = 4'b0011;
 	
-	wire cond_state;
+	
 	Condition_Check condition_check(
 		.cond(instruction_in[31:28]),
 		.stat_reg(status_register),
