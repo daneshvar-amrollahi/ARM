@@ -4,7 +4,7 @@ module ID_Stage(
 	input clk,
 	input rst,
 	input[`ADDRESS_LEN - 1: 0] PC_in,
-	input[`INSTRUCTION_LEN - 1:0] instruction_in,
+	input[`INSTRUCTION_LEN - 1:0] instrution_in,
 	
 	output[`ADDRESS_LEN - 1: 0] PC,
 
@@ -28,8 +28,6 @@ module ID_Stage(
 );
 	assign PC = PC_in;
 
-	// TODO: instantiate ControlUnit
-	// TODO: instantiate Condition_Check
 
 	wire control_unit_mux_enable;
 
