@@ -51,7 +51,7 @@ module ID_Stage(
 	assign wb_enable_out = control_unit_mux_enable ? wb_enable : 1'b0;
 	assign branch_taken_out = control_unit_mux_enable ? branch_taken : 1'b0;
 	assign status_write_enable_out = control_unit_mux_enable ? status_write_enable : 1'b0;
-	assign execute_command_out = control_unit_mux_enable ? execute_command_out : `EXECUTE_COMMAND_LEN'b0;
+	assign execute_command_out = control_unit_mux_enable ? execute_command : `EXECUTE_COMMAND_LEN'b0;
 
 	wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_src1, reg_file_src2;
 	
@@ -94,4 +94,5 @@ module ID_Stage(
 	assign shift_operand = instruction_in[`SHIFT_OPERAND_INDEX:0];
 	assign signed_immediate = instruction_in[23:0];
 	assign dest_reg_out = instruction_in[15:12];
+	assign immediate_out = instruction_in[25];
 endmodule

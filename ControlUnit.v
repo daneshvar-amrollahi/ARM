@@ -4,10 +4,10 @@
 module ControlUnit(
 		mode, opcode, s,
 		exe_cmd, mem_read, mem_write,
-		wb_enable, branch_taken, status_write_enable,
+		wb_enable, branch_taken, status_write_enable
 		);
 
-	input[`MODE_LEN - 1 : 0] mode; 
+	input[`MODE_LEN - 1 : 0] mode;
 	input[`OPCODE_LEN - 1 : 0] opcode;
 	input s;
 	output reg[`EXECUTE_COMMAND_LEN - 1 : 0] exe_cmd;
