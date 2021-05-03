@@ -4,7 +4,7 @@ module TB();
 
 	ARM ARM(.clk(clk), .rst(rst));
 
-	initial repeat(100) #100 clk = ~clk;
+	initial repeat(50) #100 clk = ~clk;
 
 	initial begin
 		#250
