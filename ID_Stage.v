@@ -6,6 +6,7 @@ module ID_Stage(
 	input[`ADDRESS_LEN - 1: 0] PC_in,
 	input[`INSTRUCTION_LEN - 1:0] instruction_in,
 	input hazard,
+	input [3:0] status_register_in,
 	
 	output[`ADDRESS_LEN - 1: 0] PC,
 
@@ -45,13 +46,13 @@ module ID_Stage(
 	wire cond_state;
 	assign control_unit_mux_enable = ~cond_state | hazard;
 
-	// Needs to be checked in the future
-	assign mem_read_out = control_unit_mux_enable ? mem_read : 1'b0;
-	assign mem_write_out = control_unit_mux_enable ? mem_write : 1'b0;
-	assign wb_enable_out = control_unit_mux_enable ? wb_enable : 1'b0;
-	assign branch_taken_out = control_unit_mux_enable ? branch_taken : 1'b0;
-	assign status_write_enable_out = control_unit_mux_enable ? status_write_enable : 1'b0;
-	assign execute_command_out = control_unit_mux_enable ? execute_command : `EXECUTE_COMMAND_LEN'b0;
+	// Needs to be checked in the future (MUX)
+	assign mem_read_out = control_unit_mux_enable == 1'b0 ? mem_read : 1'b0;
+	assign mem_write_out = control_unit_mux_enable == 1'b0 ? mem_write : 1'b0;
+	assign wb_enable_out = control_unit_mux_enable == 1'b0 ? wb_enable : 1'b0;
+	assign branch_taken_out = control_unit_mux_enable == 1'b0 ? branch_taken : 1'b0;
+	assign status_write_enable_out = control_unit_mux_enable == 1'b0 ? status_write_enable : 1'b0;
+	assign execute_command_out = control_unit_mux_enable == 1'b0 ? execute_command : `EXECUTE_COMMAND_LEN'b0;
 
 	wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_src1, reg_file_src2;
 	
@@ -66,7 +67,7 @@ module ID_Stage(
 	wire reg_file_wb_en;
 
 	//???
-	// No idea, still
+	// No idea, still (blue signals in datapath)
 	assign reg_file_wb_data = 13;
 	assign reg_file_wb_address = 7;
 	assign reg_file_wb_en = 1'b0;
@@ -81,13 +82,13 @@ module ID_Stage(
 
 	// Needs to change in the future
 	// status_register comes from actual status_register
-	wire [3:0] status_register;
-	assign status_register = 4'b0011;
+	//wire [3:0] status_register;
+	//assign status_register = 4'b0011;
 	
 	
 	Condition_Check condition_check(
 		.cond(instruction_in[31:28]),
-		.stat_reg(status_register),
+		.stat_reg(status_register_in),
 		.cond_state(cond_state)
     );
 
