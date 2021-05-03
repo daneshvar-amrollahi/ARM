@@ -39,7 +39,8 @@
 
 # software binary files
 
-/*
+/modelsim
+/quartus
 !/*.gitignore
 ##
 !*.qpf
@@ -75,7 +76,7 @@
 *.psm
 *.bak
 *.cmp
-*.jpg
+
 *.html
 *.bsf
 
