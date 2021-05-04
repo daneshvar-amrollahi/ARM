@@ -31,16 +31,16 @@ module val2gen(
             else 
             if(immediate == 1'b0 && shift_operand[4] == 0) begin
                 case(shift_operand[6:5])
-                    `LSL_SHIFT_STATE : begin
+                    `LSL_SHIFT : begin
                         val2_out = val_rm << shift_operand[11 : 7];
                     end
-                    `LSR_SHIFT_STATE : begin
+                    `LSR_SHIFT : begin
                         val2_out = val_rm >> shift_operand[11 : 7];
                     end
-                    `ASR_SHIFT_STATE : begin
+                    `ASR_SHIFT : begin
                         val2_out = val_rm >>> shift_operand[11 : 7];
                     end
-                    `ROR_SHIFT_STATE : begin
+                    `ROR_SHIFT : begin
                         tmp = {val_rm, val_rm} >> (shift_operand[11 : 7]);
                         val2_out = tmp[`REGISTER_LEN - 1 : 0];
                     end
