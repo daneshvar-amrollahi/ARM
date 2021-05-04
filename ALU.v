@@ -1,21 +1,26 @@
 `include "inst_defs.v"
+`include "defines.v"
 
 module ALU (
     alu_in1, alu_in2,
     alu_command,
-    cin,
+    status_register,
 
     alu_out,
     alu_status_register_out,
             );
 
     input [`REGISTER_LEN - 1:0] alu_in1, alu_in2;
-    input [`REGISTER_LEN - 1:0] alu_command;
-    input cin;
+    input [`EXECUTE_COMMAND_LEN - 1:0] alu_command;
+    input [3:0] status_register;
 
     output reg [`REGISTER_LEN - 1:0] alu_out;
     output wire [3:0] alu_status_register_out;
-    
+
+
+    wire cin;
+    assign cin = status_register[`CIN_INDEX];
+
     wire z, n; //zero, negative
     assign z = (alu_out == `REGISTER_LEN'b0) ? 1 : 0;
     assign n = (alu_out[`REGISTER_LEN - 1]); //sign bit
@@ -55,7 +60,7 @@ module ALU (
 
             `SBC:
                 begin
-                    {cout, alu_out} = alu_in1 - alu_in2 - 1;
+                    {cout, alu_out} = alu_in1 - alu_in2 - 1 + cin;
                     v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1])
                         & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]))
                 end
