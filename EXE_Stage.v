@@ -29,11 +29,33 @@ module EXE_Stage(
 
 	assign pc_out = pc_in;
 
-	//TODO: Instantiate ALU
+	wire [`REGISTER_LEN - 1 : 0] alu_out;
+	wire [3:0] alu_status_register_out;
+	ALU alu(
+    	.alu_in1(val_rn_in), 
+		.alu_in2(val2_out),
+    	.alu_command(execute_command_in),
+    	.status_register(status_register_in),
 
-	//TODO: Instantiate VAL2GEN
+    	.alu_out(alu_out),
+    	.alu_status_register_out(alu_status_register_out)
+    );
 
-	//TODO: Wiring
+	wire is_mem_command;
+	assign is_mem_command = mem_read_in | mem_write_in;
 
+	wire [`REGISTER_LEN - 1 : 0] val2_out;
+	val2gen v2g(
+		.val_rm(val_rm_in),
+        .shift_operand(shift_operand_in),
+        .immediate(immediate_in), 
+		.is_mem_command(is_mem_command),
+
+        .val2_out(val2_out)
+		);
+
+	wire [`REGISTER_LEN - 1 : 0] adder_out;
+	assign adder_out = pc_in + ({ (8{signed_immediate_24_in[23]}, signed_immediate_24_in }) << 2);	
+	assign branch_address = adder_out;
 
 endmodule 
