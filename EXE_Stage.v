@@ -1,13 +1,24 @@
 `include "defines.v"
 
 module EXE_Stage(
-	clk, rst,
-	pc_in, pc_out,
-	wb_enable_in, mem_read_in, mem_write_in, status_register_write_enable, branch_taken_in, execute_command_in,
-	immediate_in, signed_immediate_24_in, shift_operand_in, val_rn_in, val_rm_in, status_register_in,
+	clk, 
+	rst,
+	pc_in, 
+	wb_enable_in, 
+	mem_read_in, 
+	mem_write_in, 
+	status_register_write_enable, //not used, can be removed later
+	branch_taken_in, 
+	execute_command_in,
+	immediate_in, 
+	signed_immediate_24_in, 
+	shift_operand_in, 
+	val_rn_in, 
+	val_rm_in, 
+	status_register_in,
 
 	pc_out,
-	status_register_out, 
+	status_bits, 
 	alu_res,
 	branch_address
 );
@@ -23,14 +34,13 @@ module EXE_Stage(
 	input [3:0] status_register_in; 
 
 	output [`ADDRESS_LEN - 1: 0] pc_out;
-	output [3:0] status_register_out;
+	output [3:0] status_bits;
 	output [`REGISTER_LEN - 1 : 0] alu_res;
 	output [`ADDRESS_LEN - 1 : 0] branch_address;
 
 	assign pc_out = pc_in;
 
 	wire [`REGISTER_LEN - 1 : 0] alu_out;
-	wire [3:0] alu_status_register_out;
 	ALU alu(
     	.alu_in1(val_rn_in), 
 		.alu_in2(val2_out),
@@ -38,7 +48,7 @@ module EXE_Stage(
     	.status_register(status_register_in),
 
     	.alu_out(alu_out),
-    	.alu_status_register_out(alu_status_register_out)
+    	.alu_status_register_out(status_bits)
     );
 
 	wire is_mem_command;
