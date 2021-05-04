@@ -6,7 +6,7 @@ module ARM(input clk, rst);
 	wire[`ADDRESS_LEN - 1:0] BranchAddr;
 	wire[`ADDRESS_LEN - 1:0] 	PC_IF, PC_IF_Reg,
 								PC_ID, PC_ID_Reg,
-								PC_EX, PC_EX_Reg,
+								PC_EXE, PC_EXE_Reg,
 								PC_MEM, PC_MEM_Reg,
 								PC_WB
 								;
@@ -43,13 +43,13 @@ module ARM(input clk, rst);
 	wire [23:0] signed_immediate_ID, signed_immediate_ID_Reg;
 	wire [`SHIFT_OPERAND_LEN - 1:0] shift_operand_ID, shift_operand_ID_Reg;
 	wire [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_ID, dest_reg_ID_Reg;
-	wire [3:0] status_register_EXE, status_register_ID_Reg, status_register_ID;
+	wire [3:0] status_register_ID_Reg, status_register_ID;
 	wire hazard;
 
 	assign hazard = 1'b0;
-	assign status_register_EXE = 4'b0011;
+	//assign actual_status_register_out = 4'b0011; //should be commented?
 	ID_Stage ID_Stage(.clk(clk), .rst(rst), .PC_in(PC_IF_Reg), .hazard(hazard),
-			.instruction_in(Instruction_IF_Reg), .PC(PC_ID), .status_register_in(status_register_EXE),
+			.instruction_in(Instruction_IF_Reg), .PC(PC_ID), .status_register_in(actual_status_register_out),
 			.mem_read_out(mem_read_ID), .mem_write_out(mem_write_ID), .wb_enable_out(wb_enable_ID),
 			.execute_command_out(execute_command_ID),
 			.branch_taken_out(branch_taken_ID), .status_write_enable_out(status_write_enable_ID),
@@ -61,14 +61,14 @@ module ARM(input clk, rst);
 
 
 	
-	assign status_register_ID = status_register_EXE;
+	assign status_register_ID = actual_status_register_out;
 	ID_Stage_Reg ID_Stage_Reg(.clk(clk), .rst(rst), .flush(flush), .pc_in(PC_ID), .mem_read_in(mem_read_ID),
 		.mem_write_in(mem_write_ID), .wb_enable_in(wb_enable_ID),
 		.branch_taken_in(branch_taken_ID), .status_write_enable_in(status_write_enable_ID), 
 		.execute_command_in(execute_command_ID), .val_rn_in(reg_file_1_ID), .val_rm_in(reg_file_2_ID),
 		.immediate_in(immediate_ID), .signed_immediate_in(signed_immediate_ID),
 		.shift_operand_in(shift_operand_ID), .dest_reg_in(dest_reg_ID),
-		.status_register_in(status_register_ID), //coming from EXE stage. Don't know what it is?
+		.status_register_in(status_register_ID), //output of status register
 		
 		.pc_out(PC_ID_Reg), .mem_read_out(mem_read_ID_Reg),
 		.mem_write_out(mem_write_ID_Reg), .wb_enable_out(wb_enable_ID_Reg),
@@ -78,11 +78,66 @@ module ARM(input clk, rst);
 		.shift_operand_out(shift_operand_ID_Reg), .dest_reg_out(dest_reg_ID_Reg),
 		.status_register_out(status_register_ID_Reg));
 
+	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE;
+	wire [`ADDRESS_LEN - 1 : 0] branch_address_EXE;
+	wire [3:0] status_bits;
+	EXE_Stage EXE_Stage(
+		.clk(clk), 
+		.rst(rst),
+		.pc_in(PC_ID_Reg), 
+		.wb_enable_in(wb_enable_ID_Reg), 
+		.mem_read_in(mem_read_ID_Reg), 
+		.mem_write_in(mem_write_ID_Reg), 
+		.status_register_write_enable(status_write_enable_ID_Reg), 
+		.branch_taken_in(branch_taken_ID_Reg), 
+		.execute_command_in(execute_command_ID_Reg),
+		.immediate_in(immediate_ID_Reg), 
+		.signed_immediate_24_in(signed_immediate_ID_Reg), 
+		.shift_operand_in(shift_operand_ID_Reg), 
+		.val_rn_in(reg_file_1_ID_Reg), 
+		.val_rm_in(reg_file_2_ID_Reg), 
+		.status_register_in(status_register_ID_Reg),
 
-	EXE_Stage EXE_Stage(.clk(clk), .rst(rst), .PC_in(PC_ID_Reg), .PC(PC_EX));
+		.pc_out(PC_EXE),
+		.status_bits(status_bits), 
+		.alu_res(alu_res_EXE),
+		.branch_address(branch_address_EXE)
+	);
 
-	EXE_Stage_Reg EXE_Stage_Reg(.clk(clk), .rst(rst),
-		.PC_in(PC_EX), .PC(PC_EX_Reg));
+	wire wb_enable_EXE_Reg;
+	wire mem_read_EXE_Reg;
+	wire mem_write_EXE_Reg;
+	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE_Reg;
+	wire [`REGISTER_LEN - 1 : 0] val_rm_EXE_Reg;
+	wire [`REGISTER_LEN - 1 : 0] dest_reg_EXE_Reg;
+	EXE_Stage_Reg EXE_Stage_Reg(
+		.clk(clk),
+		.rst(clk),
+		.pc_in(PC_EXE),
+		.wb_enable_in(wb_enable_ID_Reg),
+		.mem_read_in(mem_read_ID_Reg),
+		.mem_write_in(mem_write_ID_Reg),
+		.alu_res_in(alu_res_EXE),
+		.val_rm_in(reg_file_2_ID_Reg),
+		.dest_in(dest_reg_ID_Reg),
+		
+		.pc_out(PC_EXE_Reg),
+		.wb_enable_out(wb_enable_EXE_Reg),
+		.mem_read_out(mem_read_EXE_Reg),
+		.mem_write_out(mem_write_EXE_Reg),
+		.alu_res_out(alu_res_EXE_Reg),
+		.val_rm_out(val_rm_EXE_Reg),
+		.dest_out(dest_reg_EXE_Reg)
+	);
+
+	wire [3:0] actual_status_register_out; //output of the actual register
+	register #(.WORD_LEN(4)) STATUS_REGISTER(
+		.clk(clk), 
+		.rst(rst),
+        .ld(status_write_enable_ID_Reg), 
+		.in(status_bits), 
+		.out(actual_status_register_out)
+	);
 
 	MEM_Stage MEM_Stage(.clk(clk), .rst(rst), .PC_in(PC_EX_Reg), .PC(PC_MEM));
 
