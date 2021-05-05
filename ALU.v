@@ -2,12 +2,13 @@
 `include "defines.v"
 
 module ALU (
-    alu_in1, alu_in2,
+    alu_in1, 
+    alu_in2,
     alu_command,
     status_register,
 
     alu_out,
-    alu_status_register_out,
+    alu_status_register_out
     );
 
     input [`REGISTER_LEN - 1:0] alu_in1, alu_in2;
