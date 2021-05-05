@@ -15,14 +15,15 @@ module ARM(input clk, rst);
 
 	wire[`INSTRUCTION_LEN - 1:0] 	Instruction_IF, Instruction_IF_Reg;
 
-	assign Branch_taken = 1'b0;
+	//assign Branch_taken = 1'b0;
 	assign freeze = 1'b0;
 	assign BranchAddr = `ADDRESS_LEN'b0;
     assign flush = 1'b0;
 
+	wire branch_taken_EXE;
 	IF_Stage IF_Stage(
 		.clk(clk), .rst(rst),
-		.freeze(freeze), .Branch_taken(Branch_taken),
+		.freeze(freeze), .Branch_taken(branch_taken_EXE),
 		.BranchAddr(BranchAddr),
 		.PC(PC_IF),
 		.Instruction(Instruction_IF)
@@ -82,7 +83,9 @@ module ARM(input clk, rst);
 
 	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE;
 	wire [`ADDRESS_LEN - 1 : 0] branch_address_EXE;
-	wire [3:0] status_bits;
+	wire [3:0] alu_status_bits;
+	wire wb_enable_EXE;
+	
 	EXE_Stage EXE_Stage(
 		.clk(clk), 
 		.rst(rst),
@@ -101,9 +104,11 @@ module ARM(input clk, rst);
 		.status_register_in(status_register_ID_Reg),
 
 		.pc_out(PC_EXE),
-		.status_bits(status_bits), 
+		.status_bits(alu_status_bits), 
 		.alu_res(alu_res_EXE),
-		.branch_address(branch_address_EXE)
+		.branch_address(branch_address_EXE),
+		.wb_enable_out(wb_enable_EXE),
+		.branch_taken_out(branch_taken_EXE)
 	);
 
 	wire wb_enable_EXE_Reg;
@@ -111,10 +116,10 @@ module ARM(input clk, rst);
 	wire mem_write_EXE_Reg;
 	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE_Reg;
 	wire [`REGISTER_LEN - 1 : 0] val_rm_EXE_Reg;
-	wire [`REGISTER_LEN - 1 : 0] dest_reg_EXE_Reg;
+	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_EXE_Reg;
 	EXE_Stage_Reg EXE_Stage_Reg(
 		.clk(clk),
-		.rst(clk),
+		.rst(rst),
 		.pc_in(PC_EXE),
 		.wb_enable_in(wb_enable_ID_Reg),
 		.mem_read_in(mem_read_ID_Reg),
@@ -137,11 +142,11 @@ module ARM(input clk, rst);
 		.clk(clk), 
 		.rst(rst),
         .ld(status_write_enable_ID_Reg), 
-		.in(status_bits), 
+		.in(alu_status_bits), 
 		.out(actual_status_register_out)
 	);
 
-	MEM_Stage MEM_Stage(.clk(clk), .rst(rst), .PC_in(PC_EX_Reg), .PC(PC_MEM));
+	MEM_Stage MEM_Stage(.clk(clk), .rst(rst), .PC_in(PC_EXE_Reg), .PC(PC_MEM));
 
 	MEM_Stage_Reg MEM_Stage_Reg(.clk(clk), .rst(rst),
 		.PC_in(PC_MEM), .PC(PC_MEM_Reg));

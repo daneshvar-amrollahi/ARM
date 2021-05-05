@@ -20,7 +20,9 @@ module EXE_Stage(
 	pc_out,
 	status_bits, 
 	alu_res,
-	branch_address
+	branch_address,
+	wb_enable_out,
+	branch_taken_out
 );
 
 	input clk, rst;
@@ -37,7 +39,11 @@ module EXE_Stage(
 	output [3:0] status_bits;
 	output [`REGISTER_LEN - 1 : 0] alu_res;
 	output [`ADDRESS_LEN - 1 : 0] branch_address;
+	output wb_enable_out;
+	output branch_taken_out;
 
+	assign branch_taken_out = branch_taken_in;
+	assign wb_enable_out = wb_enable_in;
 	assign pc_out = pc_in;
 
 	wire [`REGISTER_LEN - 1 : 0] alu_out;
