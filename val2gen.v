@@ -49,7 +49,7 @@ module val2gen(
         end 
         else //is mem_command
         begin
-           val2_out = {24'b0, shift_operand[11 : 0]}; 
+           val2_out = {20'b0, shift_operand[11 : 0]}; 
         end
 
     end

@@ -8,14 +8,14 @@ module ALU (
 
     alu_out,
     alu_status_register_out,
-            );
+    );
 
     input [`REGISTER_LEN - 1:0] alu_in1, alu_in2;
     input [`EXECUTE_COMMAND_LEN - 1:0] alu_command;
     input [3:0] status_register;
 
     output reg [`REGISTER_LEN - 1:0] alu_out;
-    output wire [3:0] alu_status_register_out;
+    output [3:0] alu_status_register_out;
 
 
     wire cin;

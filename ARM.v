@@ -11,6 +11,8 @@ module ARM(input clk, rst);
 								PC_WB
 								;
 
+	wire [3:0] actual_status_register_out; //output of the actual register
+
 	wire[`INSTRUCTION_LEN - 1:0] 	Instruction_IF, Instruction_IF_Reg;
 
 	assign Branch_taken = 1'b0;
@@ -130,7 +132,7 @@ module ARM(input clk, rst);
 		.dest_out(dest_reg_EXE_Reg)
 	);
 
-	wire [3:0] actual_status_register_out; //output of the actual register
+	
 	register #(.WORD_LEN(4)) STATUS_REGISTER(
 		.clk(clk), 
 		.rst(rst),
