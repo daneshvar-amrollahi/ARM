@@ -41,28 +41,28 @@ module ALU (
                 begin
                     {cout, alu_out} = alu_in1 + alu_in2;
                     v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1])
-                            & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]))
+                            & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
                 end
 
             `ADC:
                 begin
                     {cout, alu_out} = alu_in1 + alu_in2 + cin;
                     v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1]) 
-                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]))
+                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
                 end
 
             `SUB:
                 begin
                     {cout, alu_out} = alu_in1 - alu_in2;
                     v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1])
-                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]))
+                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
                 end
 
             `SBC:
                 begin
                     {cout, alu_out} = alu_in1 - alu_in2 - 1 + cin;
                     v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1])
-                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]))
+                        & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
                 end
 
             `AND:

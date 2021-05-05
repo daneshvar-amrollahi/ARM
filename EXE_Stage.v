@@ -43,7 +43,7 @@ module EXE_Stage(
 	wire [`REGISTER_LEN - 1 : 0] alu_out;
 	ALU alu(
     	.alu_in1(val_rn_in), 
-		.alu_in2(val2_out),
+		.alu_in2(val2out),
     	.alu_command(execute_command_in),
     	.status_register(status_register_in),
 
@@ -54,18 +54,19 @@ module EXE_Stage(
 	wire is_mem_command;
 	assign is_mem_command = mem_read_in | mem_write_in;
 
-	wire [`REGISTER_LEN - 1 : 0] val2_out;
+	wire [`REGISTER_LEN - 1 : 0] val2out;
 	val2gen v2g(
 		.val_rm(val_rm_in),
         .shift_operand(shift_operand_in),
         .immediate(immediate_in), 
 		.is_mem_command(is_mem_command),
 
-        .val2_out(val2_out)
+        .val2_out(val2out)
 		);
 
 	wire [`REGISTER_LEN - 1 : 0] adder_out;
-	assign adder_out = pc_in + ({ (8{signed_immediate_24_in[23]}, signed_immediate_24_in }) << 2);	
+	wire sign_immediate_extended = {8{signed_immediate_24_in[23]}, signed_immediate_24_in}; 
+	assign adder_out = pc_in + (sign_immediate_extended * 4);	
 	assign branch_address = adder_out;
 
 endmodule 

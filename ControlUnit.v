@@ -27,72 +27,69 @@ module ControlUnit(
 					`MOV : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `MOV_EXE;
+						exe_cmd = `MOV;
 					end
 					
 					`MVN : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `MOVN_EXE;
+						exe_cmd = `MVN;
 					end
 					
 					`ADD : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `ADD_EXE;
+						exe_cmd = `ADD;
 					end
 					
 					`ADC : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `ADC_EXE;
+						exe_cmd = `ADC;
 					end
 					
 					`SUB : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `SUB_EXE;
+						exe_cmd = `SUB;
 					end		
 					
 					`SBC : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `SBC_EXE;
+						exe_cmd = `SBC;
 					end
 					
 					`AND : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `AND_EXE;
+						exe_cmd = `AND;
 					end
 					
 					`ORR : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `ORR_EXE;
+						exe_cmd = `ORR;
 					end
 
 					`EOR : begin
 						wb_enable = 1'b1;
 						status_write_enable = s;
-						exe_cmd = `EOR_EXE;
+						exe_cmd = `EOR;
 					end
 					
 					`CMP : begin
 						wb_enable = 1'b0;
 						status_write_enable = 1'b1;
-						exe_cmd = `CMP_EXE;
+						exe_cmd = `CMP;
 					end
 
 					`TST: begin
 						wb_enable = 1'b0;
 						status_write_enable = 1'b1;
-						exe_cmd = `TST_EXE;
+						exe_cmd = `TST;
 					end
 
-					// `LDR : begin end
-
-					// `STR : begin end
 				endcase
 			end
 
@@ -101,14 +98,14 @@ module ControlUnit(
 					`S_LDR: begin
 						wb_enable = 1'b1;
 						status_write_enable = 1'b1;
-						exe_cmd = `LDR_EXE;
+						exe_cmd = `LDR;
 						mem_read = 1'b1;
 					end
 
 					`S_STR: begin
 						wb_enable = 1'b0;
 						status_write_enable = 1'b0;
-						exe_cmd = `STR_EXE;
+						exe_cmd = `STR;
 						mem_write = 1'b1;
 					end
 				endcase

@@ -27,9 +27,9 @@ module EXE_Stage_Reg(
 	input [`REGFILE_ADDRESS_LEN - 1 : 0] dest_in;
 	
 	output reg[`ADDRESS_LEN - 1 : 0] pc_out;
-	output wb_enable_out, mem_read_out, mem_write_out;
-	output [`REGISTER_LEN - 1 : 0] alu_res_out, val_rm_out;
-	output [`REGFILE_ADDRESS_LEN - 1 : 0] dest_out;
+	output reg wb_enable_out, mem_read_out, mem_write_out;
+	output reg [`REGISTER_LEN - 1 : 0] alu_res_out, val_rm_out;
+	output reg [`REGFILE_ADDRESS_LEN - 1 : 0] dest_out;
 
 	always @(posedge clk, posedge rst) 
         if (rst)

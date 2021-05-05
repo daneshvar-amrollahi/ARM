@@ -5,13 +5,13 @@ module val2gen(
         input [11:0] shift_operand,
         input immediate, is_mem_command,
 
-        output reg [`REGISTER_LEN - 1:0] val2_out,
+        output reg [`REGISTER_LEN - 1:0] val2_out
 		);
 
 
     reg [2 * (`REGISTER_LEN) - 1 : 0] tmp;
+    integer i;
     always @(val_rm, shift_operand, immediate, is_mem_command) begin
-        integer i;
         val2_out = `REGISTER_LEN'b0;
         tmp = 0;
         if (is_mem_command == 1'b0) begin
