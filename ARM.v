@@ -70,6 +70,7 @@ module ARM(input clk, rst);
 	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_EXE_Reg;
 	wire wb_enable_MEM_Reg;
 	wire [`REGISTER_LEN - 1 : 0] wb_value_WB;
+	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_MEM_Reg;
 	ID_Stage ID_Stage(
 		.clk(clk), 
 		.rst(rst), 
@@ -78,7 +79,7 @@ module ARM(input clk, rst);
 		.instruction_in(Instruction_IF_Reg), 
 		.PC(PC_ID), 
 		.status_register_in(actual_status_register_out),
-		.wb_dest(dest_reg_EXE_Reg),
+		.wb_dest(dest_reg_MEM_Reg),
 		.wb_value(wb_value_WB),
 		.wb_enable_WB(wb_enable_MEM_Reg),
 		.mem_read_out(mem_read_ID), 
@@ -231,7 +232,6 @@ module ARM(input clk, rst);
 	wire mem_read_MEM_Reg;
 	wire [`REGISTER_LEN - 1 : 0] alu_res_MEM_Reg;
 	wire [`REGISTER_LEN - 1 : 0] data_mem_MEM_Reg;
-	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_MEM_Reg;
 	MEM_Stage_Reg MEM_Stage_Reg(
 		.clk(clk),
 		.rst(rst),
