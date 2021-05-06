@@ -60,6 +60,9 @@ module ARM(input clk, rst);
 		.instruction_in(Instruction_IF_Reg), 
 		.PC(PC_ID), 
 		.status_register_in(actual_status_register_out),
+		.wb_dest(dest_reg_EXE_Reg),
+		.wb_value(wb_value_WB),
+		.wb_enable(wb_enable_MEM_Reg),
 		.mem_read_out(mem_read_ID), 
 		.mem_write_out(mem_write_ID), 
 		.wb_enable_out(wb_enable_ID),
@@ -213,6 +216,18 @@ module ARM(input clk, rst);
 		.pc_out(PC_MEM_Reg)
 	);
 
-	WB_Stage WB_Stage(.clk(clk), .rst(rst), .PC_in(PC_MEM_Reg), .PC(PC_WB));
+
+	wire [`REGISTER_LEN - 1 : 0] wb_value_WB;
+	WB_Stage WB_Stage(
+		.clk(clk)
+		.rst(rst),
+		.pc_in(PC_MEM_Reg),
+		.mem_read(mem_read_MEM_Reg),
+		.alu_res_in(alu_res_MEM_Reg),
+		.data_mem_in(data_mem_MEM_Reg),
+
+		.wb_value(wb_value_WB),
+		.pc_out(PC_WB)
+	);
 
 endmodule 

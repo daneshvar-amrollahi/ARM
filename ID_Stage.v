@@ -8,6 +8,10 @@ module ID_Stage(
 	input hazard,
 	input [3:0] status_register_in,
 	
+	input [`REGFILE_ADDRESS_LEN - 1 : 0] wb_dest;
+	input [`REGISTER_LEN - 1 : 0] wb_value;
+	input wb_enable;
+
 	output[`ADDRESS_LEN - 1: 0] PC,
 
 	// ouput of control unit mux
@@ -62,21 +66,21 @@ module ID_Stage(
 	assign reg_file_src2 = mem_write ? instruction_in[15:12] : instruction_in[3:0];
 	
 	//TODO: Assign these to wires coming from WB Stage
-	wire[`REGISTER_LEN - 1:0] reg_file_wb_data;
-	wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_wb_address;
-	wire reg_file_wb_en;
+	//wire[`REGISTER_LEN - 1:0] reg_file_wb_data;
+	//wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_wb_address;
+	//wire reg_file_wb_en;
 
 	//???
 	// No idea, still (blue signals in datapath)
-	assign reg_file_wb_data = 13;
-	assign reg_file_wb_address = 7;
-	assign reg_file_wb_en = 1'b0;
+	//assign reg_file_wb_data = 13;
+	//assign reg_file_wb_address = 7;
+	//assign reg_file_wb_en = 1'b0;
 
 	RegisterFile register_file(.clk(clk), .rst(rst),
     		.src1(reg_file_src1), .src2(reg_file_src2),
-			.Dest_wb(reg_file_wb_address),
-			.Result_wb(reg_file_wb_data),
-    		.writeBackEn(reg_file_wb_en),
+			.Dest_wb(wb_dest),
+			.Result_wb(wb_value),
+    		.writeBackEn(wb_enable),
 			.reg1(reg_file_out1), .reg2(reg_file_out2)
 	);
 
