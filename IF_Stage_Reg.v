@@ -13,6 +13,11 @@ module IF_Stage_Reg (
 				PC <= PC_in;
 				Instruction <= instruction_in;
 			end
+			else
+			if (flush)
+			begin
+			  	PC <= `INSTRUCTION_LEN'b0;
+			end
 				
 		end
 		

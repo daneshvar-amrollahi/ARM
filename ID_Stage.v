@@ -8,9 +8,9 @@ module ID_Stage(
 	input hazard,
 	input [3:0] status_register_in,
 	
-	input [`REGFILE_ADDRESS_LEN - 1 : 0] wb_dest;
-	input [`REGISTER_LEN - 1 : 0] wb_value;
-	input wb_enable;
+	input [`REGFILE_ADDRESS_LEN - 1 : 0] wb_dest,
+	input [`REGISTER_LEN - 1 : 0] wb_value,
+	input wb_enable_WB,
 
 	output[`ADDRESS_LEN - 1: 0] PC,
 
@@ -22,9 +22,9 @@ module ID_Stage(
 	// output of register file
 	output [`REGISTER_LEN - 1:0] reg_file_out1, reg_file_out2,
 	
-	// output to hazard unit
-	// We'll deal with this motherf* later
-	// output two_src,
+	
+	output two_src,
+	output [`REGFILE_ADDRESS_LEN - 1 : 0] src1_out, src2_out,
 	
 	output immediate_out,
 	output [23:0] signed_immediate,
@@ -34,10 +34,15 @@ module ID_Stage(
 );
 	assign PC = PC_in;
 
-
+	wire two_src_mem_write_en;
 	wire control_unit_mux_enable;
+	wire mem_write;
+	assign two_src_mem_write_en = control_unit_mux_enable == 1'b0 ? mem_write : 1'b0;
+	assign two_src = (~instruction_in[25]) | (two_src_mem_write_en);
 
-	wire mem_read, mem_write, wb_enable, branch_taken, status_write_enable;
+	
+
+	wire mem_read, wb_enable, branch_taken, status_write_enable;
 	wire [`EXECUTE_COMMAND_LEN - 1:0] execute_command;
 
 	ControlUnit control_unit(.mode(instruction_in[27:26]),
@@ -63,7 +68,7 @@ module ID_Stage(
 	assign reg_file_src1 = instruction_in[19:16];
 
 	// If fails, need to check mem_write_out
-	assign reg_file_src2 = mem_write ? instruction_in[15:12] : instruction_in[3:0];
+	assign reg_file_src2 = mem_write_out ? instruction_in[15:12] : instruction_in[3:0];
 	
 	//TODO: Assign these to wires coming from WB Stage
 	//wire[`REGISTER_LEN - 1:0] reg_file_wb_data;
@@ -80,7 +85,7 @@ module ID_Stage(
     		.src1(reg_file_src1), .src2(reg_file_src2),
 			.Dest_wb(wb_dest),
 			.Result_wb(wb_value),
-    		.writeBackEn(wb_enable),
+    		.writeBackEn(wb_enable_WB),
 			.reg1(reg_file_out1), .reg2(reg_file_out2)
 	);
 

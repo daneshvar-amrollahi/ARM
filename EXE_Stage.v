@@ -20,7 +20,7 @@ module EXE_Stage(
 	pc_out,
 	status_bits, 
 	alu_res,
-	branch_address,
+	branch_address
 );
 
 	input clk, rst;

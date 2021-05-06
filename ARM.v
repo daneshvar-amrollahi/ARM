@@ -16,25 +16,39 @@ module ARM(input clk, rst);
 	wire[`INSTRUCTION_LEN - 1:0] 	Instruction_IF, Instruction_IF_Reg;
 
 	//assign Branch_taken = 1'b0;
-	assign freeze = 1'b0;
-	assign BranchAddr = `ADDRESS_LEN'b0;
-    assign flush = 1'b0;
+	//assign freeze = 1'b0;
+	wire hazard;
+	assign freeze = hazard;
+	//assign BranchAddr = `ADDRESS_LEN'b0;
+    //assign flush = 1'b0;
+	wire branch_taken_ID_Reg;
+	assign flush = branch_taken_ID_Reg;
 
 	wire branch_taken_EXE;
-	wire branch_taken_ID_Reg;
+	
 	assign branch_taken_EXE = branch_taken_ID_Reg;
+
+	wire [`ADDRESS_LEN - 1 : 0] branch_address_EXE;
 	IF_Stage IF_Stage(
-		.clk(clk), .rst(rst),
-		.freeze(freeze), .Branch_taken(branch_taken_EXE),
-		.BranchAddr(BranchAddr),
+		.clk(clk), 
+		.rst(rst),
+		.freeze(freeze), 
+		.Branch_taken(branch_taken_EXE),
+		.BranchAddr(branch_address_EXE),
 		.PC(PC_IF),
 		.Instruction(Instruction_IF)
-		);
+	);
 
-	IF_Stage_Reg IF_Stage_Reg(.clk(clk), .rst(rst),
-			.freeze(freeze), .flush(flush),
-			.PC_in(PC_IF), .instruction_in(Instruction_IF),
-            .PC(PC_IF_Reg), .Instruction(Instruction_IF_Reg));
+	IF_Stage_Reg IF_Stage_Reg(
+		.clk(clk), 
+		.rst(rst),
+		.freeze(freeze), 
+		.flush(flush),
+		.PC_in(PC_IF), 
+		.instruction_in(Instruction_IF),
+        .PC(PC_IF_Reg), 
+		.Instruction(Instruction_IF_Reg)
+	);
 
 	wire mem_read_ID, mem_read_ID_Reg;
 	wire mem_write_ID, mem_write_ID_Reg;
@@ -49,9 +63,13 @@ module ARM(input clk, rst);
 	wire [`SHIFT_OPERAND_LEN - 1:0] shift_operand_ID, shift_operand_ID_Reg;
 	wire [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_ID, dest_reg_ID_Reg;
 	wire [3:0] status_register_ID_Reg, status_register_ID;
-	wire hazard;
+	
 
-	assign hazard = 1'b0;
+	wire two_src_ID;
+	wire [`REGFILE_ADDRESS_LEN - 1 : 0] src1_ID, src2_ID;
+	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_EXE_Reg;
+	wire wb_enable_MEM_Reg;
+	wire [`REGISTER_LEN - 1 : 0] wb_value_WB;
 	ID_Stage ID_Stage(
 		.clk(clk), 
 		.rst(rst), 
@@ -62,7 +80,7 @@ module ARM(input clk, rst);
 		.status_register_in(actual_status_register_out),
 		.wb_dest(dest_reg_EXE_Reg),
 		.wb_value(wb_value_WB),
-		.wb_enable(wb_enable_MEM_Reg),
+		.wb_enable_WB(wb_enable_MEM_Reg),
 		.mem_read_out(mem_read_ID), 
 		.mem_write_out(mem_write_ID), 
 		.wb_enable_out(wb_enable_ID),
@@ -71,10 +89,26 @@ module ARM(input clk, rst);
 		.status_write_enable_out(status_write_enable_ID),
 		.reg_file_out1(reg_file_1_ID), 
 		.reg_file_out2(reg_file_2_ID), 
+		.two_src(two_src_ID),
+		.src1_out(src1_ID),
+		.src2_out(src2_ID),
 		.immediate_out(immediate_ID),
 		.signed_immediate(signed_immediate_ID), 
 		.shift_operand(shift_operand_ID),
 		.dest_reg_out(dest_reg_ID)
+	);
+
+	wire wb_enable_EXE_Reg;
+	HazardDetector HazardDetector(
+		.src1(src1_ID), 
+		.src2(src2_ID),
+		.exe_wb_dest(dest_reg_ID_Reg), 
+		.mem_wb_dest(dest_reg_EXE_Reg),
+		.two_src(two_src_ID), 
+		.exe_wb_enable(wb_enable_ID_Reg), 
+		.mem_wb_enable(wb_enable_EXE_Reg),
+
+		.hazard(hazard)
 	);
 
 
@@ -116,7 +150,7 @@ module ARM(input clk, rst);
 	);
 
 	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE;
-	wire [`ADDRESS_LEN - 1 : 0] branch_address_EXE;
+	
 	wire [3:0] alu_status_bits;
 	
 	EXE_Stage EXE_Stage(
@@ -142,12 +176,12 @@ module ARM(input clk, rst);
 		.branch_address(branch_address_EXE)
 	);
 
-	wire wb_enable_EXE_Reg;
+	
 	wire mem_read_EXE_Reg;
 	wire mem_write_EXE_Reg;
 	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE_Reg;
 	wire [`REGISTER_LEN - 1 : 0] val_rm_EXE_Reg;
-	wire [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_EXE_Reg;
+	
 	EXE_Stage_Reg EXE_Stage_Reg(
 		.clk(clk),
 		.rst(rst),
@@ -193,7 +227,7 @@ module ARM(input clk, rst);
 	);
 
 
-	wire wb_enable_MEM_Reg;
+	
 	wire mem_read_MEM_Reg;
 	wire [`REGISTER_LEN - 1 : 0] alu_res_MEM_Reg;
 	wire [`REGISTER_LEN - 1 : 0] data_mem_MEM_Reg;
@@ -217,9 +251,9 @@ module ARM(input clk, rst);
 	);
 
 
-	wire [`REGISTER_LEN - 1 : 0] wb_value_WB;
+	
 	WB_Stage WB_Stage(
-		.clk(clk)
+		.clk(clk),
 		.rst(rst),
 		.pc_in(PC_MEM_Reg),
 		.mem_read(mem_read_MEM_Reg),
