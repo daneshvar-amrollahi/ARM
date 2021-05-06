@@ -33,6 +33,7 @@ module ID_Stage(
 
 );
 	assign PC = PC_in;
+	assign src1_out = instruction_in[19:16];
 
 	wire two_src_mem_write_en;
 	wire control_unit_mux_enable;
@@ -69,7 +70,8 @@ module ID_Stage(
 
 	// If fails, need to check mem_write_out
 	assign reg_file_src2 = mem_write_out ? instruction_in[15:12] : instruction_in[3:0];
-	
+	assign src2_out = reg_file_src2; 
+
 	//TODO: Assign these to wires coming from WB Stage
 	//wire[`REGISTER_LEN - 1:0] reg_file_wb_data;
 	//wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_wb_address;
