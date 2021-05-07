@@ -44,29 +44,29 @@ module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
             {data[88], data[89], data[90], data[91]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0110_000000010100; //STRR6,[R0],#20 //MEM[1044] = 10
             {data[92], data[93], data[94], data[95]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_1010_000000000100; //LDRR10,[R0],#4 //R10 = -1073741824
             {data[96], data[97], data[98], data[99]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0111_000000011000; //STRR7 ,[R0],#24    //MEM[1048] = -123
-            /*{data[100], data[101], data[102], data[103]} <= `INSTRUCTION_LEN'b
-            {data[104], data[105], data[106], data[107]} <= `INSTRUCTION_LEN'b
-            {data[108], data[109], data[110], data[111]} <= `INSTRUCTION_LEN'b
-            {data[112], data[113], data[114], data[115]} <= `INSTRUCTION_LEN'b
-            {data[116], data[117], data[118], data[119]} <= `INSTRUCTION_LEN'b
-            {data[120], data[121], data[122], data[123]} <= `INSTRUCTION_LEN'b
-            {data[124], data[125], data[126], data[127]} <= `INSTRUCTION_LEN'b
-            {data[128], data[129], data[130], data[131]} <= `INSTRUCTION_LEN'b
-            {data[132], data[133], data[134], data[135]} <= `INSTRUCTION_LEN'b
-            {data[136], data[137], data[138], data[139]} <= `INSTRUCTION_LEN'b
-            {data[140], data[141], data[142], data[143]} <= `INSTRUCTION_LEN'b
-            {data[144], data[145], data[146], data[147]} <= `INSTRUCTION_LEN'b
-            {data[148], data[149], data[150], data[151]} <= `INSTRUCTION_LEN'b
-            {data[152], data[153], data[154], data[155]} <= `INSTRUCTION_LEN'b
-            {data[156], data[157], data[158], data[159]} <= `INSTRUCTION_LEN'b
-            {data[160], data[161], data[162], data[163]} <= `INSTRUCTION_LEN'b
-            {data[164], data[165], data[166], data[167]} <= `INSTRUCTION_LEN'b
-            {data[168], data[169], data[170], data[171]} <= `INSTRUCTION_LEN'b
-            {data[172], data[173], data[174], data[175]} <= `INSTRUCTION_LEN'b
-            {data[176], data[177], data[178], data[179]} <= `INSTRUCTION_LEN'b
-            {data[180], data[181], data[182], data[183]} <= `INSTRUCTION_LEN'b
-            {data[184], data[185], data[186], data[187]} <= `INSTRUCTION_LEN'b*/
-
+            {data[100], data[101], data[102], data[103]} <= `INSTRUCTION_LEN'b1110_00_1_1101_0_0000_0001_000000000100; //MOVR1 ,#4//R1 = 4
+            {data[104], data[105], data[106], data[107]} <= `INSTRUCTION_LEN'b1110_00_1_1101_0_0000_0010_000000000000; //MOVR2 ,#0//R2 = 0
+            {data[108], data[109], data[110], data[111]} <= `INSTRUCTION_LEN'b1110_00_1_1101_0_0000_0011_000000000000; //MOVR3 ,#0//R3 = 0
+            {data[112], data[113], data[114], data[115]} <= `INSTRUCTION_LEN'b1110_00_0_0100_0_0000_0100_000100000011; //ADDR4 ,R0,R3,LSL #2
+            {data[116], data[117], data[118], data[119]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0100_0101_000000000000; //LDRR5 ,[R4],#0
+            {data[120], data[121], data[122], data[123]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0100_0110_000000000100; //LDRR6 ,[R4],#4
+            {data[124], data[125], data[126], data[127]} <= `INSTRUCTION_LEN'b1110_00_0_1010_1_0101_0000_000000000110; //CMPR5 ,R6
+            {data[128], data[129], data[130], data[131]} <= `INSTRUCTION_LEN'b1100_01_0_0100_0_0100_0110_000000000000; //STRGTR6 ,[R4],#0
+            {data[132], data[133], data[134], data[135]} <= `INSTRUCTION_LEN'b1100_01_0_0100_0_0100_0101_000000000100; //STRGTR5 ,[R4],#4
+            {data[136], data[137], data[138], data[139]} <= `INSTRUCTION_LEN'b1110_00_1_0100_0_0011_0011_000000000001; //ADDR3 ,R3,#1
+            {data[140], data[141], data[142], data[143]} <= `INSTRUCTION_LEN'b1110_00_1_1010_1_0011_0000_000000000011; //CMPR3 ,#3
+            {data[144], data[145], data[146], data[147]} <= `INSTRUCTION_LEN'b1011_10_1_0_111111111111111111110111  ; //BLT#-9
+            {data[148], data[149], data[150], data[151]} <= `INSTRUCTION_LEN'b1110_00_1_0100_0_0010_0010_000000000001; //ADDR2 ,R2,#1
+            {data[152], data[153], data[154], data[155]} <= `INSTRUCTION_LEN'b1110_00_0_1010_1_0010_0000_000000000001;//CMPR2 ,R1
+            {data[156], data[157], data[158], data[159]} <= `INSTRUCTION_LEN'b1011_10_1_0_111111111111111111110011  ;//BLT#-13
+            {data[160], data[161], data[162], data[163]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0001_000000000000;//LDR R1 ,[R0],#0//    R1 = -2147483648
+            {data[164], data[165], data[166], data[167]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0010_000000000100;//LDR R2 ,[R0],#4//    R2 = -1073741824
+            {data[168], data[169], data[170], data[171]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0011_000000001000;//STR R3 ,[R0],#8//    R3 = 41
+            {data[172], data[173], data[174], data[175]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0100_000000001100;//STR R4 ,[R0],#12//   R4 = 8192
+            {data[176], data[177], data[178], data[179]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0101_000000010000;//STR R5 ,[R0],#16//   R5= -123
+            {data[180], data[181], data[182], data[183]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0110_000000010100;//STR R6 ,[R0],#20//   R4 = 10
+            {data[184], data[185], data[186], data[187]} <= `INSTRUCTION_LEN'b1110_10_1_0_111111111111111111111111;//B#-1
+            {data[188], data[189], data[190], data[191]} <= `INSTRUCTION_LEN'b0;
         end
         
         else if (mem_write)

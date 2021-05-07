@@ -23,7 +23,7 @@ module ALU (
     assign cin = status_register[`CIN_INDEX];
 
     wire z, n; //zero, negative
-    assign z = (alu_out == `REGISTER_LEN'b0) ? 1 : 0;
+    assign z = (alu_out == `REGISTER_LEN'b0) ? 1'b1 : 1'b0;
     assign n = (alu_out[`REGISTER_LEN - 1]); //sign bit
     
     reg v, cout; //overflow, carry_out
@@ -55,7 +55,7 @@ module ALU (
             `SUB:
                 begin
                     {cout, alu_out} = alu_in1 - alu_in2;
-                    v = ((alu_in1[`REGISTER_LEN - 1] == alu_in2[`REGISTER_LEN - 1])
+                    v = ((alu_in1[`REGISTER_LEN - 1] == ~alu_in2[`REGISTER_LEN - 1])
                         & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
                 end
 
@@ -76,7 +76,12 @@ module ALU (
                 alu_out	 = 	alu_in1 ^ alu_in2;
 
             `CMP:
-                alu_out	 = 	alu_in1 - alu_in2;
+                begin
+                    {cout, alu_out} = {alu_in1[31], {alu_in1}} - {alu_in2[31], {alu_in2}};
+                        v = ((alu_in1[`REGISTER_LEN - 1] == ~alu_in2[`REGISTER_LEN - 1])
+                            & (alu_out[`REGISTER_LEN - 1] != alu_in1[`REGISTER_LEN - 1]));
+                end
+    
 
             `TST:
                 alu_out	 = 	alu_in1 & alu_in2;
