@@ -1,18 +1,37 @@
 `include "defines.v"
 
 module ID_Stage_Reg(
-	clk, rst, flush, pc_in, mem_read_in, mem_write_in, wb_enable_in,
-	branch_taken_in, status_write_enable_in, 
-	execute_command_in, val_rn_in, val_rm_in,
-	immediate_in, signed_immediate_in, shift_operand_in, dest_reg_in,
-	status_register_in, //coming from EXE stage. Don't know what it is?
-	
-	pc_out, mem_read_out, mem_write_out, wb_enable_out,
-	branch_taken_out, status_write_enable_out, 
-	execute_command_out, val_rn_out, val_rm_out,
-	immediate_out, signed_immediate_out, shift_operand_out, dest_reg_out,
+	clk, 
+	rst, 
+	flush, 
+	pc_in, 
+	mem_read_in, 
+	mem_write_in, 
+	wb_enable_in,
+	branch_taken_in, 
+	status_write_enable_in, 
+	execute_command_in, 
+	val_rn_in, 
+	val_rm_in,
+	immediate_in, 
+	signed_immediate_in, 
+	shift_operand_in, 
+	dest_reg_in,
+	status_register_in, 
+	pc_out, 
+	mem_read_out, 
+	mem_write_out, 
+	wb_enable_out,
+	branch_taken_out, 
+	status_write_enable_out, 
+	execute_command_out, 
+	val_rn_out,
+	val_rm_out,
+	immediate_out, 
+	signed_immediate_out, 
+	shift_operand_out, 
+	dest_reg_out,
 	status_register_out
-
 );
 	input clk, rst, flush;
 	input[`ADDRESS_LEN - 1: 0] pc_in;

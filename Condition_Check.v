@@ -2,13 +2,16 @@
 `include "inst_defs.v"
 
 module Condition_Check (
-    input [`CONDITION_LEN - 1:0] cond,
-    input [`STATUS_REG_LEN - 1:0] stat_reg,
-    output cond_state
-    );
+    cond,
+    stat_reg,
+    cond_state
+);
+
+    input [`CONDITION_LEN - 1:0] cond;
+    input [`STATUS_REG_LEN - 1:0] stat_reg;
+    output cond_state;
 
     wire z, c, n, v;
-    // TODO: order of status registers must be checked.
     assign {z, c, n, v} = stat_reg;
 
     reg cond_state_reg;

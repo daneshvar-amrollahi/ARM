@@ -7,7 +7,7 @@ module EXE_Stage(
 	wb_enable_in, 
 	mem_read_in, 
 	mem_write_in, 
-	status_register_write_enable, //not used, can be removed later
+	status_register_write_enable, 
 	branch_taken_in, 
 	execute_command_in,
 	immediate_in, 

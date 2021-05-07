@@ -64,7 +64,7 @@ module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
             {data[168], data[169], data[170], data[171]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0011_000000001000;//STR R3 ,[R0],#8//    R3 = 41
             {data[172], data[173], data[174], data[175]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0100_000000001100;//STR R4 ,[R0],#12//   R4 = 8192
             {data[176], data[177], data[178], data[179]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0101_000000010000;//STR R5 ,[R0],#16//   R5= -123
-            {data[180], data[181], data[182], data[183]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0110_000000010100;//STR R6 ,[R0],#20//   R4 = 10
+            {data[180], data[181], data[182], data[183]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_0110_000000010100;//STR R6 ,[R0],#20//   R6 = 10
             {data[184], data[185], data[186], data[187]} <= `INSTRUCTION_LEN'b1110_10_1_0_111111111111111111111111;//B#-1
             {data[188], data[189], data[190], data[191]} <= `INSTRUCTION_LEN'b0;
         end

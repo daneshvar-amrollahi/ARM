@@ -22,11 +22,11 @@ module ALU (
     wire cin;
     assign cin = status_register[`CIN_INDEX];
 
-    wire z, n; //zero, negative
+    wire z, n; 
     assign z = (alu_out == `REGISTER_LEN'b0) ? 1'b1 : 1'b0;
-    assign n = (alu_out[`REGISTER_LEN - 1]); //sign bit
+    assign n = (alu_out[`REGISTER_LEN - 1]); 
     
-    reg v, cout; //overflow, carry_out
+    reg v, cout; 
     assign alu_status_register_out = {z, cout, n, v};
 
     always @(*) begin

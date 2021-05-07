@@ -19,10 +19,6 @@ module val2gen(
             if (immediate == 1'b1) begin
                 val2_out = {24'b0 ,shift_operand[7 : 0]};
                 
-                //for (i = 0; i < shift_operand[11:8] ; i = i + 1) begin
-                //    val2_out = {val2_out[1], val2_out[0], val2_out[31:2]}; 
-                //end 
-                
 
                 tmp = {val2_out, val2_out} >> (({{2'b0},shift_operand[11 : 8]}) << 1);
                 val2_out = tmp[`REGISTER_LEN - 1 : 0];

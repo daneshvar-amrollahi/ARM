@@ -1,37 +1,64 @@
 `include "defines.v"
 
 module ID_Stage(
-	input clk,
-	input rst,
-	input[`ADDRESS_LEN - 1: 0] PC_in,
-	input[`INSTRUCTION_LEN - 1:0] instruction_in,
-	input hazard,
-	input [3:0] status_register_in,
-	
-	input [`REGFILE_ADDRESS_LEN - 1 : 0] wb_dest,
-	input [`REGISTER_LEN - 1 : 0] wb_value,
-	input wb_enable_WB,
-
-	output[`ADDRESS_LEN - 1: 0] PC,
-
-	// ouput of control unit mux
-	output mem_read_out, mem_write_out, wb_enable_out,
-	output [`EXECUTE_COMMAND_LEN - 1:0] execute_command_out,
-	output branch_taken_out, status_write_enable_out,
-	
-	// output of register file
-	output [`REGISTER_LEN - 1:0] reg_file_out1, reg_file_out2,
-	
-	
-	output two_src,
-	output [`REGFILE_ADDRESS_LEN - 1 : 0] src1_out, src2_out,
-	
-	output immediate_out,
-	output [23:0] signed_immediate,
-	output [`SHIFT_OPERAND_LEN - 1:0] shift_operand,
-	output [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_out /* = Rd */
-
+	clk,
+	rst,
+	PC_in,
+	instruction_in,
+	hazard,
+	status_register_in,	
+	wb_dest,
+	wb_value,
+	wb_enable_WB,
+	PC,
+	mem_read_out, 
+	mem_write_out, 
+	wb_enable_out,
+	execute_command_out,
+	branch_taken_out, 
+	status_write_enable_out,
+	reg_file_out1, 
+	reg_file_out2,
+	two_src,
+	src1_out, 
+	src2_out,
+	immediate_out,
+	signed_immediate,
+	shift_operand,
+	dest_reg_out /* = Rd */
 );
+
+	input clk;
+	input rst;
+	input[`ADDRESS_LEN - 1: 0] PC_in;
+	input[`INSTRUCTION_LEN - 1:0] instruction_in;
+	input hazard;
+	input [3:0] status_register_in;
+	
+	input [`REGFILE_ADDRESS_LEN - 1 : 0] wb_dest;
+	input [`REGISTER_LEN - 1 : 0] wb_value;
+	input wb_enable_WB;
+
+	output[`ADDRESS_LEN - 1: 0] PC;
+
+	output mem_read_out, mem_write_out, wb_enable_out;
+	output [`EXECUTE_COMMAND_LEN - 1:0] execute_command_out;
+	output branch_taken_out, status_write_enable_out;
+	
+	output [`REGISTER_LEN - 1:0] reg_file_out1, reg_file_out2;
+	
+	
+	output two_src;
+	output [`REGFILE_ADDRESS_LEN - 1 : 0] src1_out, src2_out;
+	
+	output immediate_out;
+	output [23:0] signed_immediate;
+	output [`SHIFT_OPERAND_LEN - 1:0] shift_operand;
+	output [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_out; /* = Rd */
+
+
+
+
 	assign PC = PC_in;
 	assign src1_out = instruction_in[19:16];
 
@@ -46,17 +73,23 @@ module ID_Stage(
 	wire mem_read, wb_enable, branch_taken, status_write_enable;
 	wire [`EXECUTE_COMMAND_LEN - 1:0] execute_command;
 
-	ControlUnit control_unit(.mode(instruction_in[27:26]),
-			.opcode(instruction_in[24:21]), .s(instruction_in[20]),
-			.exe_cmd(execute_command), .mem_read(mem_read), .mem_write(mem_write),
-			.wb_enable(wb_enable), .branch_taken(branch_taken),
-			.status_write_enable(status_write_enable));
+	ControlUnit control_unit(
+		.mode(instruction_in[27:26]),
+		.opcode(instruction_in[24:21]), 
+		.s(instruction_in[20]),
+		.exe_cmd(execute_command), 
+		.mem_read(mem_read), 
+		.mem_write(mem_write),
+		.wb_enable(wb_enable), 
+		.branch_taken(branch_taken),
+		.status_write_enable(status_write_enable)
+	);
 
-	//cond_state should be ORed with a hazard signal ---> select of mux
+	
 	wire cond_state;
 	assign control_unit_mux_enable = ~cond_state | hazard;
 
-	// Needs to be checked in the future (MUX)
+	
 	assign mem_read_out = control_unit_mux_enable == 1'b0 ? mem_read : 1'b0;
 	assign mem_write_out = control_unit_mux_enable == 1'b0 ? mem_write : 1'b0;
 	assign wb_enable_out = control_unit_mux_enable == 1'b0 ? wb_enable : 1'b0;
@@ -68,33 +101,22 @@ module ID_Stage(
 	
 	assign reg_file_src1 = instruction_in[19:16];
 
-	// If fails, need to check mem_write_out
+	
 	assign reg_file_src2 = mem_write_out ? instruction_in[15:12] : instruction_in[3:0];
 	assign src2_out = reg_file_src2; 
 
-	//TODO: Assign these to wires coming from WB Stage
-	//wire[`REGISTER_LEN - 1:0] reg_file_wb_data;
-	//wire[`REGFILE_ADDRESS_LEN - 1:0] reg_file_wb_address;
-	//wire reg_file_wb_en;
 
-	//???
-	// No idea, still (blue signals in datapath)
-	//assign reg_file_wb_data = 13;
-	//assign reg_file_wb_address = 7;
-	//assign reg_file_wb_en = 1'b0;
-
-	RegisterFile register_file(.clk(clk), .rst(rst),
-    		.src1(reg_file_src1), .src2(reg_file_src2),
-			.Dest_wb(wb_dest),
-			.Result_wb(wb_value),
-    		.writeBackEn(wb_enable_WB),
-			.reg1(reg_file_out1), .reg2(reg_file_out2)
+	RegisterFile register_file(
+		.clk(clk), 
+		.rst(rst),
+    	.src1(reg_file_src1), 
+		.src2(reg_file_src2),
+		.dest_wb(wb_dest),
+		.result_wb(wb_value),
+    	.wb_enable(wb_enable_WB),
+		.reg1(reg_file_out1), .reg2(reg_file_out2)
 	);
 
-	// Needs to change in the future
-	// status_register comes from actual status_register
-	//wire [3:0] status_register;
-	//assign status_register = 4'b0011;
 	
 	
 	Condition_Check condition_check(
@@ -107,4 +129,5 @@ module ID_Stage(
 	assign signed_immediate = instruction_in[23:0];
 	assign dest_reg_out = instruction_in[15:12];
 	assign immediate_out = instruction_in[25];
+
 endmodule
