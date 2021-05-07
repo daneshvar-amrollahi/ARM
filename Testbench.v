@@ -7,7 +7,7 @@ module TB();
 	initial begin
 	  	#200
 		clk = 1'b0;
-		repeat(50) begin
+		repeat(200) begin
 		  	clk = ~clk;
 			#100;
 		end

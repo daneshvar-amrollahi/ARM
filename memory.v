@@ -13,6 +13,9 @@ module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
         {data[addr], data[addr + 1], data[addr + 2], data[addr + 3]}
         : `INSTRUCTION_LEN'b0;
 
+    wire [`INSTRUCTION_LEN - 1 : 0] new_addr;
+    assign new_addr = { {addr[`INSTRUCTION_LEN - 1 : 2]}, {2'b00} };
+
     always @(posedge clk, posedge rst) begin
         if (rst) 
         begin
@@ -35,12 +38,12 @@ module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
             {data[64], data[65], data[66], data[67]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0001_000000000000; //STRR1 ,[R0],#0//MEM[1024] = 8192
             {data[68], data[69], data[70], data[71]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_1011_000000000000; //LDRR11,[R0],#0//R11 = 8192
             {data[72], data[73], data[74], data[75]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0010_000000000100; //STRR2 ,[R0],#4//MEM[1028] = -1073741824
-            {data[76], data[77], data[78], data[79]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0011_000000001000; //STRR3 ,[R0],#8//MEM[1032] = -2147483648
-            {data[80], data[81], data[82], data[83]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0100_000000001101; //STRR4 ,[R0],#13//MEM[1036] = 41
+            {data[76], data[77], data[78], data[79]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0011_000000001000; //STR    R3 ,[R0],#8//MEM[1032] = -2147483648
+            {data[80], data[81], data[82], data[83]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0100_000000001101; //STR    R4 ,[R0],#13    //MEM[1036] = 41
             {data[84], data[85], data[86], data[87]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0101_000000010000; //STRR5 ,[R0],#16//MEM[1040] = -123
-            {data[88], data[89], data[90], data[91]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0110_000000010100; //STRR6,[R0],#20//MEM[1044] = 10
-            {data[92], data[93], data[94], data[95]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_1010_000000000100; //LDRR10,[R0],#4//R10 = -1073741824
-            {data[96], data[97], data[98], data[99]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0111_000000011000; //STRR7 ,[R0],#24//MEM[1048] = -123
+            {data[88], data[89], data[90], data[91]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0110_000000010100; //STRR6,[R0],#20 //MEM[1044] = 10
+            {data[92], data[93], data[94], data[95]} <= `INSTRUCTION_LEN'b1110_01_0_0100_1_0000_1010_000000000100; //LDRR10,[R0],#4 //R10 = -1073741824
+            {data[96], data[97], data[98], data[99]} <= `INSTRUCTION_LEN'b1110_01_0_0100_0_0000_0111_000000011000; //STRR7 ,[R0],#24    //MEM[1048] = -123
             /*{data[100], data[101], data[102], data[103]} <= `INSTRUCTION_LEN'b
             {data[104], data[105], data[106], data[107]} <= `INSTRUCTION_LEN'b
             {data[108], data[109], data[110], data[111]} <= `INSTRUCTION_LEN'b
@@ -67,7 +70,9 @@ module memory(clk, rst, addr, write_data, mem_read, mem_write, read_data);
         end
         
         else if (mem_write)
-            {data[addr], data[addr + 1], data[addr + 2], data[addr + 3]} = write_data;
+        begin
+            {data[new_addr], data[new_addr + 1], data[new_addr + 2], data[new_addr + 3]} = write_data;
+        end
     end
 
 endmodule
