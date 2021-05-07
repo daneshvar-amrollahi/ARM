@@ -28,7 +28,7 @@ module RegisterFile (
             data[12] <= `REGISTER_LEN'd12;
             data[13] <= `REGISTER_LEN'd13;
             data[14] <= `REGISTER_LEN'd14;
-            //data[15] <= `REGISTER_LEN'd15;
+            data[15] <= `REGISTER_LEN'd15;
             /*for (i = 0 ; i < `REGISTER_MEM_SIZE ; i = i + 1)
                 data[i] <= i;
             */

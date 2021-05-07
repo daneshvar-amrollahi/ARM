@@ -7,7 +7,7 @@
 
 `define REGFILE_ADDRESS_LEN     4
 `define REGISTER_LEN            32
-`define REGISTER_MEM_SIZE       15
+`define REGISTER_MEM_SIZE       16
 
 `define OPCODE_LEN              4
 `define EXECUTE_COMMAND_LEN     4
