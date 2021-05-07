@@ -203,12 +203,12 @@ module ARM(input clk, rst);
 		.dest_out(dest_reg_EXE_Reg)
 	);
 
-	
-	register #(.WORD_LEN(4)) STATUS_REGISTER(
-		.clk(clk), 
+	StatusRegister StatusRegister(
+		.clk(clk),
 		.rst(rst),
-        .ld(status_write_enable_ID_Reg), 
-		.in(alu_status_bits), 
+		.ld(status_write_enable_ID_Reg),
+
+		.in(alu_status_bits),
 		.out(actual_status_register_out)
 	);
 
