@@ -111,6 +111,8 @@ module ARM(input clk, rst);
 
 	
 	assign status_register_ID = actual_status_register_out;
+
+	// Should add src1, src2 from ID_Stage, which goes to forwarding unit
 	ID_Stage_Reg ID_Stage_Reg(
 		.clk(clk), 
 		.rst(rst), 
@@ -149,6 +151,8 @@ module ARM(input clk, rst);
 	
 	wire [3:0] alu_status_bits;
 	
+	wire [`REGISTER_LEN - 1 : 0] val_rm_mux_out_EXE;
+
 	EXE_Stage EXE_Stage(
 		.clk(clk), 
 		.rst(rst),
@@ -169,7 +173,14 @@ module ARM(input clk, rst);
 		.pc_out(PC_EXE),
 		.status_bits(alu_status_bits), 
 		.alu_res(alu_res_EXE),
-		.branch_address(branch_address_EXE)
+		.branch_address(branch_address_EXE),
+			
+		.alu_res_in_MEM(), // corresponding output must be added to MEM_Stage
+		.wb_value_WB(wb_value_WB),
+		.alu_mux_src_1_sel(), // No Forwarding, No Select :)
+		.alu_mux_src_2_sel(), // No Forwarding, No Select :)
+
+		.val_rm_mux_out(val_rm_mux_out_EXE)
 	);
 
 	
@@ -186,7 +197,8 @@ module ARM(input clk, rst);
 		.mem_read_in(mem_read_ID_Reg),
 		.mem_write_in(mem_write_ID_Reg),
 		.alu_res_in(alu_res_EXE),
-		.val_rm_in(reg_file_2_ID_Reg),
+		// .val_rm_in(reg_file_2_ID_Reg), // needs to be changed to output of EXE_Stage
+		.val_rm_in(val_rm_mux_out_EXE),
 		.dest_in(dest_reg_ID_Reg),
 		
 		.pc_out(PC_EXE_Reg),
@@ -209,6 +221,7 @@ module ARM(input clk, rst);
 
 	wire [`REGISTER_LEN - 1 : 0] data_mem_MEM;
 
+	// Should add alu_res_out as an output of MEM_Stage
 	MEM_Stage MEM_Stage(
 		.clk(clk),
 		.rst(rst),

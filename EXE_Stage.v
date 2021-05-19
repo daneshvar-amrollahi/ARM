@@ -20,7 +20,14 @@ module EXE_Stage(
 	pc_out,
 	status_bits, 
 	alu_res,
-	branch_address
+	branch_address,
+	
+	alu_res_in_MEM,
+	wb_value_WB,
+	alu_mux_src_1_sel,
+	alu_mux_src_2_sel,
+
+	val_rm_mux_out
 );
 
 	input clk, rst;
@@ -33,19 +40,31 @@ module EXE_Stage(
 	input [`REGISTER_LEN - 1: 0] val_rn_in, val_rm_in;
 	input [3:0] status_register_in; 
 
+	// forwarding requirements
+	input [`REGISTER_LEN - 1 : 0] alu_res_in_MEM;
+	input [`REGISTER_LEN - 1 : 0] wb_value_WB;
+	
+	input [1:0] alu_mux_src_1_sel;
+	input [1:0] alu_mux_src_2_sel;
+
 	output [`ADDRESS_LEN - 1: 0] pc_out;
 	output [3:0] status_bits;
 	output [`REGISTER_LEN - 1 : 0] alu_res;
 	output [`ADDRESS_LEN - 1 : 0] branch_address;
 	
-
+	// forwarding requirements
+	output [`REGISTER_LEN - 1 : 0] val_rm_mux_out;
 	
 	assign pc_out = pc_in;
 
 	wire [`REGISTER_LEN - 1 : 0] alu_out;
 	wire [`REGISTER_LEN - 1 : 0] val2out;
+	
+	wire [`REGISTER_LEN - 1 : 0] alu_mux_rn_out;
+	wire [`REGISTER_LEN - 1 : 0] alu_mux_rm_out;
+	
 	ALU alu(
-    	.alu_in1(val_rn_in), 
+    	.alu_in1(alu_mux_rn_out), 
 		.alu_in2(val2out),
     	.alu_command(execute_command_in),
     	.status_register(status_register_in),
@@ -57,10 +76,29 @@ module EXE_Stage(
 
 	wire is_mem_command;
 	assign is_mem_command = mem_read_in | mem_write_in;
-
 	
+	// wire alu_res_in_MEM;
+
+	mux_3_to_1 #(REGISTER_LEN) alu_mux_src_1(
+		.in1(val_rn_in)
+		.in2(alu_res_in_MEM),
+		.in3(wb_value_WB),
+		.sel(alu_mux_src_1_sel),
+		.out(alu_mux_rn_out)
+	);
+
+	mux_3_to_1 #(REGISTER_LEN) alu_mux_src_2(
+		.in1(val_rm_in)
+		.in2(alu_res_in_MEM),
+		.in3(wb_value_WB),
+		.sel(alu_mux_src_2_sel),
+		.out(alu_mux_rm_out)
+	);
+
+	assign val_rm_mux_out = alu_mux_rm_out;
+
 	val2gen v2g(
-		.val_rm(val_rm_in),
+		.val_rm(alu_mux_rm_out),
         .shift_operand(shift_operand_in),
         .immediate(immediate_in), 
 		.is_mem_command(is_mem_command),
