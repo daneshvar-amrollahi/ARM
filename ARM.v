@@ -1,6 +1,6 @@
 `include "defines.v"
 
-module ARM(input clk, rst);
+module ARM(input clk, rst, frwrd_mode);
 
 	wire freeze, branch_taken, flush;
 	wire[`ADDRESS_LEN - 1:0] 	PC_IF, PC_IF_Reg,
@@ -105,12 +105,10 @@ module ARM(input clk, rst);
 		.two_src(two_src_ID), 
 		.exe_wb_enable(wb_enable_ID_Reg), //can be removed because of having fwd unit
 		.mem_wb_enable(wb_enable_EXE_Reg), //can be removed because of having fwd unit
-
+		.EXE_mem_read_en(mem_read_ID_Reg),
 		.hazard(hazard),
 
-		.hazard_ignore(ignore_hazard_FWD),
-
-		.EXE_mem_read_en(mem_read_ID)
+		.hazard_ignore(frwrd_mode)
 	);
 
 
@@ -290,7 +288,7 @@ module ARM(input clk, rst);
 	
 	
 	Forwarding Forwarding ( 
-		.en_forwarding(1'b1),
+		.en_forwarding(frwrd_mode),
 		.WB_wb_en(wb_enable_MEM_Reg), 
 		.MEM_wb_en(wb_enable_EXE_Reg),
 		.MEM_dst(dest_reg_EXE_Reg), 

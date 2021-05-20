@@ -1,13 +1,13 @@
 module TB();
 
-	reg clk = 1'b0, rst = 1'b0;
+	reg clk = 1'b0, rst = 1'b0, frwrd_mode = 1'b1;
 
-	ARM ARM(.clk(clk), .rst(rst));
+	ARM ARM(.clk(clk), .rst(rst), .frwrd_mode(frwrd_mode));
 
 	initial begin
 	  	#200
 		clk = 1'b0;
-		repeat(1000) begin
+		repeat(2000) begin
 		  	clk = ~clk;
 			#100;
 		end
