@@ -10,7 +10,9 @@ module MEM_Stage(
 	val_rm_in,
 
 	data_mem_out,
-	pc_out
+	pc_out,
+
+	alu_res_out_MEM	
 );
 	input clk;
 	input rst;
@@ -24,6 +26,9 @@ module MEM_Stage(
 	output [`ADDRESS_LEN - 1 : 0] pc_out;
 	assign pc_out = pc_in;
 
+	//forwarding:
+	output [`REGISTER_LEN - 1 : 0] alu_res_out_MEM;
+	assign alu_res_out_MEM = alu_res_in;
 
 	memory data_mem(
 		.clk(clk), 

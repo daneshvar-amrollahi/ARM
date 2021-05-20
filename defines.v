@@ -35,4 +35,9 @@
 `define ASR_SHIFT 2'b10
 `define ROR_SHIFT 2'b11 
 
+//forwarding
+`define FORW_SEL_FROM_ID 2'b00
+`define FORW_SEL_FROM_WB 2'b10
+`define FORW_SEL_FROM_MEM 2'b01
+
 `endif

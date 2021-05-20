@@ -79,16 +79,16 @@ module EXE_Stage(
 	
 	// wire alu_res_in_MEM;
 
-	mux_3_to_1 #(REGISTER_LEN) alu_mux_src_1(
-		.in1(val_rn_in)
+	mux_3_to_1 #(`REGISTER_LEN) alu_mux_src_1(
+		.in1(val_rn_in),
 		.in2(alu_res_in_MEM),
 		.in3(wb_value_WB),
 		.sel(alu_mux_src_1_sel),
 		.out(alu_mux_rn_out)
 	);
 
-	mux_3_to_1 #(REGISTER_LEN) alu_mux_src_2(
-		.in1(val_rm_in)
+	mux_3_to_1 #(`REGISTER_LEN) alu_mux_src_2(
+		.in1(val_rm_in),
 		.in2(alu_res_in_MEM),
 		.in3(wb_value_WB),
 		.sel(alu_mux_src_2_sel),

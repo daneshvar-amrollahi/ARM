@@ -96,16 +96,21 @@ module ARM(input clk, rst);
 	);
 
 	wire wb_enable_EXE_Reg;
+	wire ignore_hazard_FWD;
 	HazardDetector HazardDetector(
 		.src1(src1_ID), 
 		.src2(src2_ID),
 		.exe_wb_dest(dest_reg_ID_Reg), 
-		.mem_wb_dest(dest_reg_EXE_Reg),
+		.mem_wb_dest(dest_reg_EXE_Reg), //can be removed because of having fwd unit
 		.two_src(two_src_ID), 
-		.exe_wb_enable(wb_enable_ID_Reg), 
-		.mem_wb_enable(wb_enable_EXE_Reg),
+		.exe_wb_enable(wb_enable_ID_Reg), //can be removed because of having fwd unit
+		.mem_wb_enable(wb_enable_EXE_Reg), //can be removed because of having fwd unit
 
-		.hazard(hazard)
+		.hazard(hazard),
+
+		.hazard_ignore(ignore_hazard_FWD),
+
+		.EXE_mem_read_en(mem_read_ID)
 	);
 
 
@@ -113,6 +118,7 @@ module ARM(input clk, rst);
 	assign status_register_ID = actual_status_register_out;
 
 	// Should add src1, src2 from ID_Stage, which goes to forwarding unit
+	wire [`REGFILE_ADDRESS_LEN - 1 : 0] src1_ID_Reg, src2_ID_Reg;
 	ID_Stage_Reg ID_Stage_Reg(
 		.clk(clk), 
 		.rst(rst), 
@@ -144,7 +150,12 @@ module ARM(input clk, rst);
 		.signed_immediate_out(signed_immediate_ID_Reg),
 		.shift_operand_out(shift_operand_ID_Reg), 
 		.dest_reg_out(dest_reg_ID_Reg),
-		.status_register_out(status_register_ID_Reg)
+		.status_register_out(status_register_ID_Reg),
+
+		.src1_in(src1_ID),
+		.src2_in(src2_ID),
+		.src1_out(src1_ID_Reg),
+		.src2_out(src2_ID_Reg)
 	);
 
 	wire [`REGISTER_LEN - 1 : 0] alu_res_EXE;
@@ -152,7 +163,8 @@ module ARM(input clk, rst);
 	wire [3:0] alu_status_bits;
 	
 	wire [`REGISTER_LEN - 1 : 0] val_rm_mux_out_EXE;
-
+	wire [`REGISTER_LEN - 1 : 0] alu_res_out_MEM;
+	wire [1 : 0] sel_src1_FWD, sel_src2_FWD;
 	EXE_Stage EXE_Stage(
 		.clk(clk), 
 		.rst(rst),
@@ -175,10 +187,10 @@ module ARM(input clk, rst);
 		.alu_res(alu_res_EXE),
 		.branch_address(branch_address_EXE),
 			
-		.alu_res_in_MEM(), // corresponding output must be added to MEM_Stage
+		.alu_res_in_MEM(alu_res_out_MEM), // corresponding output must be added to MEM_Stage
 		.wb_value_WB(wb_value_WB),
-		.alu_mux_src_1_sel(), // No Forwarding, No Select :)
-		.alu_mux_src_2_sel(), // No Forwarding, No Select :)
+		.alu_mux_src_1_sel(sel_src1_FWD), // No Forwarding, No Select :), We have a forwarding unit now ---> we have select :)
+		.alu_mux_src_2_sel(sel_src2_FWD), // No Forwarding, No Select :), We have a forwarding unit now ---> we have select :)
 
 		.val_rm_mux_out(val_rm_mux_out_EXE)
 	);
@@ -220,7 +232,6 @@ module ARM(input clk, rst);
 	);
 
 	wire [`REGISTER_LEN - 1 : 0] data_mem_MEM;
-
 	// Should add alu_res_out as an output of MEM_Stage
 	MEM_Stage MEM_Stage(
 		.clk(clk),
@@ -232,7 +243,9 @@ module ARM(input clk, rst);
 		.val_rm_in(val_rm_EXE_Reg),
 
 		.data_mem_out(data_mem_MEM),
-		.pc_out(PC_MEM)
+		.pc_out(PC_MEM),
+
+		.alu_res_out_MEM(alu_res_out_MEM)
 	);
 
 
@@ -270,6 +283,24 @@ module ARM(input clk, rst);
 
 		.wb_value(wb_value_WB),
 		.pc_out(PC_WB)
+	);
+
+
+
+	
+	
+	Forwarding Forwarding ( 
+		.en_forwarding(1'b1),
+		.WB_wb_en(wb_enable_MEM_Reg), 
+		.MEM_wb_en(wb_enable_EXE_Reg),
+		.MEM_dst(dest_reg_EXE_Reg), 
+		.WB_dst(dest_reg_MEM_Reg), 
+		.src1_in(src1_ID_Reg), 
+		.src2_in(src2_ID_Reg),
+
+		.sel_src1(sel_src1_FWD), 
+		.sel_src2(sel_src2_FWD),
+		.ignore_hazard(ignore_hazard_FWD)
 	);
 
 endmodule 

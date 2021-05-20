@@ -31,7 +31,12 @@ module ID_Stage_Reg(
 	signed_immediate_out, 
 	shift_operand_out, 
 	dest_reg_out,
-	status_register_out
+	status_register_out,
+
+	src1_in,
+	src2_in,
+	src1_out,
+	src2_out
 );
 	input clk, rst, flush;
 	input[`ADDRESS_LEN - 1: 0] pc_in;
@@ -54,7 +59,11 @@ module ID_Stage_Reg(
 	output reg [23:0] signed_immediate_out;
 	output reg [`SHIFT_OPERAND_LEN - 1:0] shift_operand_out;
 	output reg [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_out;
-	output reg [3:0] status_register_out;
+	output reg [3:0] status_register_out;	
+
+	//forwarding:
+	input [`REGFILE_ADDRESS_LEN - 1 : 0] src1_in, src2_in;
+	output reg [`REGFILE_ADDRESS_LEN - 1 : 0] src1_out, src2_out;
 
 
 	always @(posedge clk, posedge rst) 
@@ -84,6 +93,8 @@ module ID_Stage_Reg(
 				shift_operand_out <= `SHIFT_OPERAND_LEN'b0;
 				dest_reg_out <= `REGFILE_ADDRESS_LEN'b0;
 				status_register_out <= 4'b0;
+				src1_out <= `REGFILE_ADDRESS_LEN'b0;
+				src2_out <= `REGFILE_ADDRESS_LEN'b0;
 			end
 			else
 			begin
@@ -97,7 +108,8 @@ module ID_Stage_Reg(
 				shift_operand_out <= shift_operand_in;
 				dest_reg_out <= dest_reg_in;
 				status_register_out <= status_register_in;
-            	
+            	src1_out <= src1_in;
+				src2_out <= src2_in;
 			end
 		end
 endmodule
