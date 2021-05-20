@@ -90,4 +90,5 @@ transcript*
 sc_dpiheader.h
 vsim.dbg
 
+*.zip
 # End of https://www.toptal.com/developers/gitignore/api/modelsim
