@@ -15,7 +15,9 @@ module MEM_Stage_Reg(
 	alu_res_out,
 	data_mem_out,
 	dest_reg_out,
-	pc_out
+	pc_out,
+
+	freeze
 );
 
 	input clk;
@@ -26,6 +28,7 @@ module MEM_Stage_Reg(
 	input [`REGISTER_LEN - 1 : 0] alu_res_in;
 	input [`REGISTER_LEN - 1 : 0] data_mem_in;
 	input [`REGFILE_ADDRESS_LEN - 1 : 0] dest_reg_in;
+	input freeze;
 	
 	output reg wb_enable_out;
 	output reg mem_read_out;
@@ -46,11 +49,18 @@ module MEM_Stage_Reg(
 		end
         else
 		begin
-            wb_enable_out <= wb_enable_in;
-			mem_read_out <= mem_read_in;
-			alu_res_out <= alu_res_in;
-			data_mem_out <= data_mem_in;
-			dest_reg_out <= dest_reg_in;
-			pc_out <= pc_in;
+			if (freeze)
+			begin
+			  
+			end
+			else
+			begin
+				wb_enable_out <= wb_enable_in;
+				mem_read_out <= mem_read_in;
+				alu_res_out <= alu_res_in;
+				data_mem_out <= data_mem_in;
+				dest_reg_out <= dest_reg_in;
+				pc_out <= pc_in;
+			end
 		end
 endmodule

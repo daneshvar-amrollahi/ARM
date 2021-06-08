@@ -36,7 +36,9 @@ module ID_Stage_Reg(
 	src1_in,
 	src2_in,
 	src1_out,
-	src2_out
+	src2_out,
+
+	freeze
 );
 	input clk, rst, flush;
 	input[`ADDRESS_LEN - 1: 0] pc_in;
@@ -49,6 +51,7 @@ module ID_Stage_Reg(
 	input [`SHIFT_OPERAND_LEN - 1:0] shift_operand_in;
 	input [`REGFILE_ADDRESS_LEN - 1:0] dest_reg_in;
 	input [3:0] status_register_in;
+	input freeze;
 
 	output reg[`ADDRESS_LEN - 1: 0] pc_out;
 	output reg mem_read_out, mem_write_out, wb_enable_out;
@@ -81,6 +84,11 @@ module ID_Stage_Reg(
 		end
         else
 		begin
+			if (freeze)
+			begin
+			  
+			end
+			else
 			if (flush)
 			begin
 				pc_out <= `ADDRESS_LEN'b0;

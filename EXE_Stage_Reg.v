@@ -17,7 +17,9 @@ module EXE_Stage_Reg(
 	mem_write_out,
 	alu_res_out,
 	val_rm_out,
-	dest_out
+	dest_out,
+
+	freeze
 );
 
 	input clk, rst;
@@ -25,6 +27,7 @@ module EXE_Stage_Reg(
 	input wb_enable_in, mem_read_in, mem_write_in;
 	input [`REGISTER_LEN - 1 : 0] alu_res_in, val_rm_in;
 	input [`REGFILE_ADDRESS_LEN - 1 : 0] dest_in;
+	input freeze;
 	
 	output reg[`ADDRESS_LEN - 1 : 0] pc_out;
 	output reg wb_enable_out, mem_read_out, mem_write_out;
@@ -41,9 +44,16 @@ module EXE_Stage_Reg(
 		end
         else
 		begin
-            pc_out <= pc_in;
-			{wb_enable_out, mem_read_out, mem_write_out} <= {wb_enable_in, mem_read_in, mem_write_in};
-			{alu_res_out, val_rm_out} <= {alu_res_in, val_rm_in};
-			dest_out <= dest_in;
+			if (freeze)
+			begin
+			  
+			end
+			else
+			begin
+				pc_out <= pc_in;
+				{wb_enable_out, mem_read_out, mem_write_out} <= {wb_enable_in, mem_read_in, mem_write_in};
+				{alu_res_out, val_rm_out} <= {alu_res_in, val_rm_in};
+				dest_out <= dest_in;
+			end
 		end
 endmodule

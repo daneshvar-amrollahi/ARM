@@ -25,10 +25,12 @@ module ARM(input clk, rst, frwrd_mode);
 	assign branch_taken_EXE = branch_taken_ID_Reg;
 
 	wire [`ADDRESS_LEN - 1 : 0] branch_address_EXE;
+
+	wire freeze_MEM; //SRAM
 	IF_Stage IF_Stage(
 		.clk(clk), 
 		.rst(rst),
-		.freeze(freeze), 
+		.freeze(freeze | freeze_MEM), 
 		.branch_taken(branch_taken_EXE),
 		.branch_addr(branch_address_EXE),
 		.PC(PC_IF),
@@ -38,7 +40,7 @@ module ARM(input clk, rst, frwrd_mode);
 	IF_Stage_Reg IF_Stage_Reg(
 		.clk(clk), 
 		.rst(rst),
-		.freeze(freeze), 
+		.freeze(freeze | freeze_MEM), 
 		.flush(flush),
 		.PC_in(PC_IF), 
 		.instruction_in(Instruction_IF),
@@ -149,6 +151,7 @@ module ARM(input clk, rst, frwrd_mode);
 		.shift_operand_out(shift_operand_ID_Reg), 
 		.dest_reg_out(dest_reg_ID_Reg),
 		.status_register_out(status_register_ID_Reg),
+		.freeze(freeze_MEM),
 
 		.src1_in(src1_ID),
 		.src2_in(src2_ID),
@@ -207,9 +210,9 @@ module ARM(input clk, rst, frwrd_mode);
 		.mem_read_in(mem_read_ID_Reg),
 		.mem_write_in(mem_write_ID_Reg),
 		.alu_res_in(alu_res_EXE),
-		// .val_rm_in(reg_file_2_ID_Reg), // needs to be changed to output of EXE_Stage
 		.val_rm_in(val_rm_mux_out_EXE),
 		.dest_in(dest_reg_ID_Reg),
+		.freeze(freeze_MEM),
 		
 		.pc_out(PC_EXE_Reg),
 		.wb_enable_out(wb_enable_EXE_Reg),
@@ -231,6 +234,7 @@ module ARM(input clk, rst, frwrd_mode);
 
 	wire [`REGISTER_LEN - 1 : 0] data_mem_MEM;
 	// Should add alu_res_out as an output of MEM_Stage
+	
 	MEM_Stage MEM_Stage(
 		.clk(clk),
 		.rst(rst),
@@ -243,7 +247,8 @@ module ARM(input clk, rst, frwrd_mode);
 		.data_mem_out(data_mem_MEM),
 		.pc_out(PC_MEM),
 
-		.alu_res_out_MEM(alu_res_out_MEM)
+		.alu_res_out_MEM(alu_res_out_MEM),
+		.freeze_MEM(freeze_MEM)
 	);
 
 
@@ -260,6 +265,7 @@ module ARM(input clk, rst, frwrd_mode);
 		.alu_res_in(alu_res_EXE_Reg),
 		.data_mem_in(data_mem_MEM),
 		.dest_reg_in(dest_reg_EXE_Reg),
+		.freeze(freeze_MEM),
 
 		.wb_enable_out(wb_enable_MEM_Reg),
 		.mem_read_out(mem_read_MEM_Reg),

@@ -1,3 +1,4 @@
+`timescale 1ns/1ns
 module TB();
 
 	reg clk = 1'b0, rst = 1'b0, frwrd_mode = 1'b1;
@@ -7,9 +8,9 @@ module TB();
 	initial begin
 	  	#200
 		clk = 1'b0;
-		repeat(2000) begin
+		repeat(5000) begin
 		  	clk = ~clk;
-			#100;
+			#10;
 		end
 	end
 
