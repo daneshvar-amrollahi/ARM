@@ -24,10 +24,10 @@ module SRAM_Controller(
     input write_en, read_en;
     input [31 : 0] addr;
     input [31 : 0] st_val;
-    output [31 : 0] read_data;
+    output [63 : 0] read_data;
     output ready;
 
-    inout [31 : 0] SRAM_DQ;
+    inout [63 : 0] SRAM_DQ;
     output [16 : 0] SRAM_ADDR;
     output SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N;
 
@@ -38,7 +38,7 @@ module SRAM_Controller(
 
     assign SRAM_WE_N = write_en ? 1'b0 : 1'b1;
     assign SRAM_ADDR = addr[18 : 2];
-    assign SRAM_DQ = write_en ? st_val : 32'bzzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz;
+    assign SRAM_DQ = write_en ? st_val : 64'bzzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz_zzzz;
 
     assign read_data = SRAM_DQ;
 
