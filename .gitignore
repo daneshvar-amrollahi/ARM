@@ -43,6 +43,7 @@
 /quartus
 !/*.gitignore
 ##
+*.mpf
 !*.qpf
 !*.qsf
 !*.qws
