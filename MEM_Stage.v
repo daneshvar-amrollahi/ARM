@@ -32,34 +32,10 @@ module MEM_Stage(
 	output [`REGISTER_LEN - 1 : 0] alu_res_out_MEM;
 	assign alu_res_out_MEM = alu_res_in;
 
-	/*
-	memory data_mem(
-		.clk(clk), 
-		.rst(rst), 
-		.addr(alu_res_in), 
-        .write_data(val_rm_in), 
-		.mem_read(mem_read_in), 
-        .mem_write(mem_write_in),
-		.read_data(data_mem_out)
-	);
-	*/
-
 	wire sram_ready;
 	wire [63 : 0] SRAM_DQ;
 	wire [16 : 0] SRAM_ADDR;
 	wire SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N;
-
-	wire [63 : 0] sram_read_data64; 
-
-	/*
-	SRAM SRAM (
-		.clk(clk),
-		.rst(rst),
-		.SRAM_WE_N(SRAM_WE_N),
-		.SRAM_ADDR(SRAM_ADDR),
-		.SRAM_DQ(SRAM_DQ)
-	);
-	*/
 
 	SRAM64 SRAM64(
 		.clk(clk),
@@ -72,7 +48,6 @@ module MEM_Stage(
 	wire sram_write_en, sram_read_en;
 	wire [31 : 0] sram_read_data;
 	wire [63 : 0] sram_read_data64; 
-	wire sram_read;
 
 	wire[3:0] SRAM_ignored_signals;
 	wire [31:0] sram_address;
@@ -114,7 +89,7 @@ module MEM_Stage(
 		.sram_addr(sram_address),
 		.sram_write_data(sram_write_data),
 		.sram_write_en(sram_write_en),
-		.sram_read_en(sram_read_ens),
+		.sram_read_en(sram_read_en),
 		.sram_read_data(sram_read_data64), 
 		.sram_ready(sram_ready)
 	);

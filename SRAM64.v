@@ -1,4 +1,5 @@
-`include "define.v"
+`include "defines.v"
+`timescale 1ns/1ns
 
 module SRAM64(
     clk,
@@ -11,7 +12,7 @@ module SRAM64(
     input rst;
     input SRAM_WE_N;
     input [16 : 0] SRAM_ADDR; 
-    inout signed [63 : 0] SRAM_DQ;  
+    inout [63 : 0] SRAM_DQ;  
 
 
     reg [31 : 0] memory [0 : 511]; // 65535
@@ -20,8 +21,12 @@ module SRAM64(
 
     always @(posedge clk) begin
         if(~SRAM_WE_N) begin
-            $display("SRAM WRITE mem[%d] = %d", SRAM_ADDR, SRAM_DQ);
-            memory[SRAM_ADDR] <= SRAM_DQ[31 : 0];  
+            // $display("SRAM WRITE mem[%d] = %d", SRAM_ADDR, SRAM_DQ);
+            memory[SRAM_ADDR] <= SRAM_DQ[31 : 0];
         end
     end
+
+    integer i;
+    initial for (i = 0; i < 512; i = i + 1)
+        memory[i] = 32'b0;
 endmodule
