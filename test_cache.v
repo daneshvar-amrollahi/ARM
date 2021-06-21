@@ -55,11 +55,15 @@ module test_cache();
         addr = 32'd1024;
         write_data = 32'd97690;
         {mem_read, mem_write} = 2'b01;
-        #140 mem_write = 1'b0;
+        #120 addr = 32'd1028;
+        write_data = 32'd97685;
+        #210 addr = 32'd1036;
         write_data = 32'd31415;
-        mem_read = 1'b1;
-        #200 {mem_read, mem_write} = 2'b01;
+        #240 {mem_read, mem_write} = 2'b01;
         addr = 32'd1036;
+        #200 {mem_read, mem_write} = 2'b10;
+        #200 addr = 32'd1024;
+        #200 addr = 32'd1028;
         #500 $stop;
 
     end
