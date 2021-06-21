@@ -26,7 +26,7 @@ module SRAM64(
         end
     end
 
-    integer i;
-    initial for (i = 0; i < 512; i = i + 1)
-        memory[i] = 32'b0;
+    // integer i;
+    // initial for (i = 0; i < 512; i = i + 1)
+    //     memory[i] = 32'b0;
 endmodule

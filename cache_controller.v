@@ -120,7 +120,9 @@ module cache_controller(
         if (ps == S_IDLE && cache_hit)
             read_data = cache_read_data;
         else if (ps == S_SRAM_READ_CACHE_WRITE && sram_ready) begin
-            read_data = addr[0] ? sram_read_data[63:32] : sram_read_data[31:0];
+            $display("@%t: addr[2] = %d, sram[63:32]: %d, sram[31:0]: %d", $time, addr[2], 
+                sram_read_data[63:32], sram_read_data[31:0]);
+            read_data = addr[2] ? sram_read_data[63:32] : sram_read_data[31:0];
         end
     end
 
