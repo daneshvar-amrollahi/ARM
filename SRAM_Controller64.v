@@ -1,8 +1,6 @@
 `include "defines.v"
 
-`timescale 1ns/1ns
-
-module SRAM_Controller(
+module SRAM_Controller64(
     clk,
     rst,
     write_en,
@@ -10,16 +8,9 @@ module SRAM_Controller(
     addr, 
     st_val,
     read_data,
-    ready,
-    
-    SRAM_DQ,
-    SRAM_ADDR,
-    SRAM_UB_N,
-    SRAM_LB_N,
-    SRAM_WE_N,
-    SRAM_CE_N,
-    SRAM_OE_N
+    ready
 );
+
     input clk, rst;
     input write_en, read_en;
     input [31 : 0] addr;
@@ -27,9 +18,9 @@ module SRAM_Controller(
     output [63 : 0] read_data;
     output ready;
 
-    inout [63 : 0] SRAM_DQ;
-    output [16 : 0] SRAM_ADDR;
-    output SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N;
+    wire [63 : 0] SRAM_DQ;
+    wire [16 : 0] SRAM_ADDR;
+    wire SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N;
 
     assign SRAM_UB_N = 1'b0;
     assign SRAM_LB_N = 1'b0;
@@ -105,5 +96,13 @@ module SRAM_Controller(
                 cnt <= cnt + 1;
         end
     end
+
+    SRAM64 sram64(
+        .clk(clk),
+        .rst(rst),
+        .SRAM_WE_N(SRAM_WE_N),
+        .SRAM_ADDR(SRAM_ADDR),  
+        .SRAM_DQ(SRAM_DQ) 
+    );
 
 endmodule

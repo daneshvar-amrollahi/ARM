@@ -9,7 +9,7 @@ module mux2to1 #(parameter WORD_LEN=32) (
     input sel_a, sel_b;
     output reg [WORD_LEN - 1:0] out;
 
-    always @(*)
+    always @(a or b or sel_a or sel_b)
     begin
         out = 0;
         if (sel_a)

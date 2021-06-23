@@ -41,6 +41,6 @@
 `define FORW_SEL_FROM_MEM 2'b01
 
 //SRAM
-`define SRAM_CNT 3'b101
+`define SRAM_CNT 3'b100
 
 `endif
