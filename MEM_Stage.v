@@ -32,11 +32,11 @@ module MEM_Stage(
 	output [`REGISTER_LEN - 1 : 0] alu_res_out_MEM;
 	assign alu_res_out_MEM = alu_res_in;
 
-	wire [31:0] sram_addr;
-    wire [31:0] sram_write_data;
+	wire [`ADDRESS_LEN - 1 : 0] sram_addr;
+    wire [`REGISTER_LEN - 1 : 0] sram_write_data;
     wire sram_write_en;
     wire sram_read_en;
-    wire [63:0] sram_read_data; 
+    wire [2 * `REGISTER_LEN - 1 : 0] sram_read_data; 
     wire sram_ready;
 
     SRAM_Controller64 sram_ctrl(
@@ -56,8 +56,8 @@ module MEM_Stage(
         .rst(rst),
         .addr(alu_res_in), 
         .write_data(val_rm_in),
-        .MEM_R_EN(mem_read_in), 
-        .MEM_W_EN(mem_write_in),
+        .mem_read_enable(mem_read_in), 
+        .mem_write_enable(mem_write_in),
         .read_data(data_mem_out),
         .ready(cache_ready),
         .sram_addr(sram_addr),

@@ -43,4 +43,8 @@
 //SRAM
 `define SRAM_CNT 3'b100
 
+//CACHE
+`define CACHE_ROWS  64
+`define TAG_LEN     10
+
 `endif
