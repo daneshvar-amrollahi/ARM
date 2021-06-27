@@ -14,6 +14,10 @@ module TB();
 		end
 	end
 
+	reg [31:0] instr_cnt;
+	initial instr_cnt = 0;
+	always @(ARM.IF_Stage.pc_reg_out)
+		instr_cnt = instr_cnt + 1;
 	
 	initial begin
 		#10
